@@ -1,0 +1,284 @@
+﻿@model Datamantra.Model.Entity.Course
+@{
+    ViewBag.Title = "Courses";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!--innerpage header start-->
+<section class="inr_page_title">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-7 col-sm-7 col-xs-12">
+                    <h2>Information Systems</h2>
+                </div>
+                <div class="col-md-5 col-sm-5 col-xs-12">
+                    <h4>Home/Courses/@Model.CourseName</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--inner page header end-->
+@if (Model != null)
+{
+     <!--course list start-->
+    <section class="sec_pad paddingBoth100 doubleBorder backgroundLightGreen">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="sidebarProducts">
+                        <!--Course Info Begin-->
+                        <div class="productBox">
+                            <a href="course-single.html">
+                                <div class="productImage">
+                                    <img src="assets/images/demo-content/productImage-big.jpg" alt="Product">@*@Model.Image*@
+                                </div>
+                                <div class="productDescription">
+                                    <h4 class="fw-600">
+                                        @Model.CourseName
+                                    </h4>
+                                    <span>@Model.ShortDescription</span>
+                                </div>
+                            </a>
+                            <div class="productMeta">
+                                <div class="displayTableVertical">
+                                    <div class="displayTableCell">
+                                        @*<div class="starrr" data-rating="4">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa-star-o fa"></i>
+                                            </div>*@
+                                        <div class="rateit" id="spanCourseRating" data-rateit-value="4" data-rateit-ispreset=" true" data-rateit-readonly="true"><span  >(<span id="spanReviewCount">194 Reviews</span>)</span></div>
+                                        @*<div class="jrOverallRatings"><div class="jrOverallUser" title="User rating"><span class="jrIconUsers jrRatingLabel"></span><div class="jrRatingStars"><div class="jrRatingStarsUser taL"><div style="width: 60%;">&nbsp;</div></div></div><span id="spanCourseRating" class="jrRatingValue pLeft10 mTop5">0</span><div class="clear"></div><span class="rating_count">(<span class="count">194 Reviews</span>)</span></div></div>*@
+                                    </div>
+                                    <div class="displayTableCell">
+                                        <span class="textLineThrough">@Model.Price$</span>
+                                        <span class="colorMotive">@Model.DiscountedPrice$</span>
+                                    </div>
+                                    <div class="displayTableCell">
+                                        <a href="#">@Model.EnrolledCount Student  <i class="fa fa-user"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Course Info End-->
+                        <!--Staff Info Begin-->
+                        <div class="personBox personBox--inline">
+                            @{Html.RenderAction("_StaffList", "Datamantra", new { CourseId = Model.CourseId });}
+                        </div>
+                        <!-- Staff info end-->
+                        @*<div class="sidebarNavigation">
+                                <ul class="list-unstyled">
+                                    <li class="fw-700"><a href="#"><i class="fa fa-paper-plane-o"></i>Home</a></li>
+                                    <li class="fw-700"><a href="#"><i class="fa fa-laptop"></i>Curriculum</a></li>
+                                    <li class="fw-700"><a href="#"><i class="fa fa-user"></i>Members</a></li>
+                                    <li class="fw-700"><a href="#"><i class="fa fa-comments-o"></i>Events</a></li>
+                                    <li class="fw-700"><a href="#"><i class="fa fa-stack-overflow"></i>Forum</a></li>
+                                </ul>
+                            </div>*@
+                    </div>
+                </div>
+                <div class="hidden-lg hidden-md marginBottom30"></div>
+                <div class="col-md-8">
+                    <div class="textBox textBox--price displayTableVertical marginBottom30">
+                        <div class="displayTableCell text-left">
+                            <span class="fw-600">Price :</span>
+                            <span class="colorMotive">
+                                <span class="textLineThrough"> @Model.Price$</span>
+                                <span> @Model.DiscountedPrice$</span>
+                            </span>
+                        </div>
+                        @*<div class="displayTableCell text-right">
+                                <button type="submit" class="btn btn-primary text-capitalize">
+                                    take this course
+                                </button>
+                            </div>*@
+                    </div>
+
+                    <div class="textBox">
+                        <h4 class="fw-600 marginBottom40">
+                            @Model.CourseName
+                        </h4>
+                        <p class="marginBottom40">
+                            @Html.Raw(Model.LongDescription)
+                        </p>
+                        @*<ul class="list-unstyled list-arrowBackground fw-600 marginBottom40">
+                                <li>The Basics: HTML, XHTML, CSS and JavaScript</li>
+                                <li>BackEnd Development: PHP, MySQL, XML and jSON</li>
+                                <li>FrontEnd Development: AJAX, jQuery, HTML5 and CSS3</li>
+                            </ul>
+                            <h4 class="fw-600 marginBottom40">
+                                Join Over 36,000 Students, and Build a Variety of Functional Websites
+                                from Scratch .
+                            </h4>
+                            <p class="marginBottom40">
+                                This course is regularly updated and along with video tutorials it also contains exercises
+                                manuals and resources to help you succeed. Anyone looking to get into web development
+                                should sign up today--no prior experience necessary <a class="textItalic fw-400 textUnderline" href="">More..</a>
+                            </p>
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingOne">
+                                        <h4 class="panel-title">
+                                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                <i class="fa fa-list-alt"></i> Fully Responsive Theme
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                        <div class="panel-body">
+                                            One morning, when Gregor Samsa woke from troubled dreams, he found him
+                                            self transformed in his bed into a horrible vermin. He lay on his armour-like ba
+                                            ck, and if he lifted his head a little he could see his brown belly, slightly domed
+                                            and divided by arches into stiff sections. The bedding was hardly able to cover
+                                            it and seemed ready
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingTwo">
+                                        <h4 class="panel-title">
+                                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                                <i class="fa fa-angellist"></i> Strategy Solutions
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                                        <div class="panel-body">
+                                            One morning, when Gregor Samsa woke from troubled dreams, he found him
+                                            self transformed in his bed into a horrible vermin. He lay on his armour-like ba
+                                            ck, and if he lifted his head a little he could see his brown belly, slightly domed
+                                            and divided by arches into stiff sections. The bedding was hardly able to cover
+                                            it and seemed ready
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingThree">
+                                        <h4 class="panel-title">
+                                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                                <i class="fa fa-files-o"></i> Touchable Slider
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                        <div class="panel-body">
+                                            One morning, when Gregor Samsa woke from troubled dreams, he found him
+                                            self transformed in his bed into a horrible vermin. He lay on his armour-like ba
+                                            ck, and if he lifted his head a little he could see his brown belly, slightly domed
+                                            and divided by arches into stiff sections. The bedding was hardly able to cover
+                                            it and seemed ready
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingFour">
+                                        <h4 class="panel-title">
+                                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                                <i class="fa fa-desktop"></i> Clean Modern Code
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                                        <div class="panel-body">
+                                            One morning, when Gregor Samsa woke from troubled dreams, he found him
+                                            self transformed in his bed into a horrible vermin. He lay on his armour-like ba
+                                            ck, and if he lifted his head a little he could see his brown belly, slightly domed
+                                            and divided by arches into stiff sections. The bedding was hardly able to cover
+                                            it and seemed ready
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
+                    </div>
+                    <div class="spacer15"></div>
+                    <div class="textBox" id="divCourseReview">
+                        @{Html.RenderAction("_CourseReviewList", "Datamantra", new { CourseId = Model.CourseId });}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--course list end-->
+
+
+    @*<div class="container">
+            <div class="row">
+                <div id="divAllAuthors" class="col-lg-4">
+                    <div class="ct-sidebar">
+                        <div class="ct-productImage">
+                            <img src="assets/images/demo-content/productImage-big.jpg" alt="Product">
+                            @Model.Image
+                        </div>
+
+                        <div class="ct-productDescription">
+                            <h4 class="ct-fw-600">
+                                @Model.CourseName
+                            </h4>
+                            <span>@Model.ShortDescription.</span>
+                        </div>
+
+                        <div class="ct-productMeta">
+                            <div class="ct-u-displayTableVertical">
+                                <div class="ct-u-displayTableCell">
+                                    <div class="starrr" data-rating="4"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa-star-o fa"></i></div>
+                                </div>
+                                <div class="ct-u-displayTableCell">
+                                    <span class="ct-u-colorMotive">@Model.Price$</span>
+                                    <span class="ct-u-textLineThrough">@Model.DiscountedPrice$</span>
+                                </div>
+                                <div class="ct-u-displayTableCell">
+                                    <a href="#">@Model.EnrolledCount Student <i class="fa fa-user"></i></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="ct-sidebar">
+                        @{Html.RenderAction("_StaffList", "Datamantra", new { CourseId = Model.CourseId });}
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    ss
+                    <div id="divPageContent" class="ct-productBox ct-productBox--inline ct-u-displayTable ct-u-marginBottom30">
+                        <div class="ct-textBox ct-textBox--price ct-u-displayTableVertical ct-u-marginBottom30">
+                            <div class="ct-u-displayTableCell text-left">
+                                <span class="ct-fw-600">Price :</span> <span class="ct-u-colorMotive">@Model.Price$ <span class="ct-u-textLineThrough">@Model.DiscountedPrice$</span></span>
+                            </div>
+                            <div class="ct-u-displayTableCell text-right">
+                                <button type="submit" class="btn btn-primary text-capitalize">
+                                    take this course
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            @Html.Raw(Model.LongDescription)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+    });
+
+    function ShowReviews(id) {
+        $("#divCourseReview").html();
+        $("#divCourseReview").html("<div class='taC'><i id='divPageLoader' class='fa fa-spinner fa-spin' style='font-size:30px;'></i></div>");
+        $.ajax({
+            url: "/Datamantra/_CourseReviewList",
+            data: { id: id },
+            cache: false,
+            success: function (data) {
+                $('#divCourseReview').html(data);
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            }
+        });
+    }
+</script>

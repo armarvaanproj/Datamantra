@@ -1,0 +1,426 @@
+﻿@using Datamantra.Common
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datamantra</title>
+    @*@Styles.Render("~/Content/css")*@
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/css/font-face.css" rel="stylesheet" />
+    <link href="~/Content/css/style.css" rel="stylesheet" />
+    <link href="~/Content/css/toastr.css" rel="stylesheet" />
+    <link href="~/Content/css/jquery-ui.css" rel="stylesheet" />
+    <link href="~/Content/css/jquery.ui.autocomplete.css" rel="stylesheet" />
+    <link href="~/Content/css/rateit.css" rel="stylesheet" />
+    @*@Scripts.Render("~/bundles/modernizr")*@
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryval")
+    @*<script src="~/Scripts/jquery.validate.min.js"></script>*@
+    @Scripts.Render("~/bundles/bootbox")
+    @Scripts.Render("~/bundles/toastr")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/Slider")
+    <script src="https://cdn.ckeditor.com/4.8.0/standard/ckeditor.js"></script>
+
+    @*@Scripts.Render("~/bundles/ckeditor")*@
+    @Scripts.RenderFormat(@"<script src=""{0}"" async></script>", "~/bundles/rateitjs")
+        <link href="~/Content/css/responsive.css" rel="stylesheet" />
+</head>
+<body>
+    @{
+    int RoleId = (int)Utility.GetRoleIDFromSession();
+        long UserId = (long)Utility.GetUserIdFromSession();
+
+    }
+    <!--header start-->
+    <header>
+        <div class="header_top mbl_hide">
+            <div class="container">
+                <div class="col-md-12">
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        @if (UserId == null || UserId == 0)
+                        {
+                            <ul class="before_signincnt">
+                                <li style="cursor:pointer;" id="lilogin" onclick="Login()"><a>Login<i class="fa fa-lock"></i> </a></li>
+                                <li style="cursor:pointer;" onclick="SignUp()"><a>Sign up <i class="fa fa-user"></i> </a></li>
+                            </ul>
+                        }
+                    </div>
+                    @*<div class="col-md-6 col-sm-6 col-xs-12"></div>*@
+                    <div class="col-md-6 col-sm-12 col-xs-12 floatR">
+                        <div class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right " id="cbp-spmenu-s2">
+                            @Html.Partial("_Mainmenu")
+                        </div>
+                    </div>
+
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+        <!--headerbottom start-->
+        <div class="header_btm">
+            <div class="container">
+                <div class="col-md-12">
+                    <div class="col-md-3 col-sm-3 col-xs-8">
+                        <img src="~/Content/images/IMG-20171110-WA0002.jpg" style="width:8%" />
+                    </div>
+                    <div class="col-md-9 col-sm-9 col-xs-4">
+                        <div class="menu_icon web_hide" id="menu_toggle">
+                            <i class="fa fa-bars"> </i>
+                        </div>
+                        <div class="mbl_view">
+                            <div class="menu_close" id="closeMenu">
+                                <i class="fa fa-close"></i>
+                            </div>
+                            <ul class="menu pull-right">
+                                <li><a href="/Datamantra/Index">Home</a></li>
+                                <li><a href="/Datamantra/Courses">Courses</a></li>
+
+                                @if (RoleId != null && RoleId == (int)Datamantra.Model.Entity.RoleType.ADMIN)
+                                {
+                                    <li><a href="/Admin/Index">Admin</a></li>
+                                }
+                                <li><a href="/Datamantra/Staffs">Staffs</a></li>
+                                <li class="mbl_hide">
+                                    <div class="pull-right searchInput--icon">
+                                        <div class="form-group margin-bottom-0">
+                                            <input id="SearchCourse" placeholder="Search for Courses" required="" type="text" class="form-control input-lg searchCourse">
+                                        </div>
+                                        <button type="submit" class="search-button"><i class="fa fa-search"></i></button>
+                                    </div>
+                                </li>
+                                <li class="log_mob logoff_web"><a href="#" class="logoff_btn btn btn-primary pull-right" data-hint="Log Off" onclick="Logoff();"><i class="fa fa-power-off"></i> Log Off</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--header bottom end-->
+    </header>
+
+    <!-- Modal -->
+    <div class="modal fade edit-modal modalBackground" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content" id="ModelBody"></div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div id="body-Content" class="body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <div class="paddingTop100 paddingBottom80">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-3">
+                            <div class="widget">
+                                <div class="widget-inner">
+                                    <a href="#">
+                                        <img src="~/Content/images/IMG-20171110-WA0002.jpg" style="width:8%" />
+                                        @*<img class="marginBottom30 footer-logo" src="" alt="logo">*@
+                                    </a>
+                                    <p class="marginBottom40">
+                                        Far far away, behind the word mount
+                                        ains, far from the countries Vokalia
+                                        <span class="fw-300 center-block marginTop30">
+                                            texts. Separated they live in Bookm
+                                            arksgrove right at the coast of the
+                                            control about the blind texts it is an .
+                                        </span>
+                                    </p>
+                                    <a class="textUnderline" href="">LEARN MORE</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="widget">
+                                <div class="widget-inner">
+                                    <h3 class="text-uppercase fw-400 marginBottom50">popular posts</h3>
+                                    <ul class="list-unstyled">
+                                        <li><a class="lineHeight33" href="blog.html">My daily blog entry (259)</a></li>
+                                        <li><a class="lineHeight33" href="blog.html">Unrevealed Shortcodes (223)</a></li>
+                                        <li><a class="lineHeight33" href="blog.html">Developing with pleasure (204)</a></li>
+                                        <li><a class="lineHeight33" href="blog.html">Communication information (199)</a></li>
+                                        <li><a class="lineHeight33" href="blog.html">Beautiful Image Post (167)</a></li>
+                                        <li><a class="lineHeight33" href="blog.html">Unrevealed Shortcodes (223)</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix visible-sm"></div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="widget widget-latestPosts">
+                                <div class="widget-inner">
+                                    <h4 class="text-uppercase fw-400 marginBottom50">recent post</h4>
+                                    <div class="media displayTable hoverImage--rectangle">
+                                        <a href="blog-single.html">
+                                            <div class="media-left">
+                                                <img class="media-object" src="assets/images/demo-content/recentPost-1.jpg" alt="recent post">
+                                            </div>
+                                            <div class="media-body">
+                                                <p class="fw-300 lineHeight25 textInHover">
+                                                    Far far away, behind the
+                                                    word mountains, far.
+                                                </p>
+                                                <span class="center-block colorWhiteLight">October 1,2014</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="media displayTable hoverImage--rectangle">
+                                        <a href="blog-single.html">
+                                            <div class="media-left">
+                                                <img class="media-object" src="assets/images/demo-content/recentPost-2.jpg" alt="recent post">
+                                            </div>
+                                            <div class="media-body">
+                                                <p class="fw-300 lineHeight25 textInHover">
+                                                    Far far away, behind the
+                                                    word mountains, far.
+                                                </p>
+                                                <span class="center-block colorWhiteLight">October 1,2014</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="media displayTable hoverImage--rectangle">
+                                        <a href="blog-single.html">
+                                            <div class="media-left">
+                                                <img class="media-object" src="assets/images/demo-content/recentPost-3.jpg" alt="recent post">
+                                            </div>
+                                            <div class="media-body">
+                                                <p class="fw-300 lineHeight25 textInHover">
+                                                    Far far away, behind the
+                                                    word mountains, far.
+                                                </p>
+                                                <span class="center-block colorWhiteLight">October 1,2014</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+
+                        </div>
+                        <div class="clearfix visible-sm"></div>
+                    </div>
+                </div>
+            </div>
+            <section class="footer_bottom sec_pad text-center">
+                <p>copyright@2017 -  All Rights Reserved</p>
+            </section>
+        </footer>
+    </div>
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $(window).scroll(function () {
+            if ($(window).scrollTop() > 100) {
+                $('header').addClass('menu_fixed');
+            } else {
+                $('header').removeClass('menu_fixed');
+            }
+        });
+
+        $("#menu_toggle").click(function () {
+            $(".mbl_view").toggle();
+        });
+
+        $("#closeMenu").click(function () {
+            $(".mbl_view").hide();
+        });
+
+        //$('#myModal').modal({
+        //    backdrop: 'static',
+        //    keyboard: false
+        //});
+        $("#SearchCourse").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/Admin/GetAllCourse",
+                    data: {
+                        searchText: $("#SearchCourse").val()
+                    },
+                    success: function (data) {
+                        if (data != null && data.length > 0 && data.length <= 100) {
+                            response($.map(data, function (item) {
+                                return {
+                                    label: item.CourseName,
+                                    value: item.CourseId,
+                                }
+                            }).slice(0, 100));
+                        }
+                        else if (data != null && data.length > 100) {
+                            response($.map(data, function (item, i) {
+                                if (i == null || i < 1) {
+                                    return {
+                                        label: "Too many matches. Please type more characters to fetch the list"
+                                    }
+                                }
+                            }
+                            ));
+                        }
+                        else {
+                            var result = [{ label: 'No matches found', value: "" }];
+                            response(result);
+                        }
+                    },
+                    error: function () {
+                    }
+                });
+            },
+            response: function (event, ui) {
+                // ui.content is the array that's about to be sent to the response callback.
+                if (ui == null || ui.content == null || ui.content.length == 0) {
+                } else {
+                }
+            },
+            change: function (event, ui) {
+                //if the value of the textbox does not match a suggestion, clear its value
+                if (!ui.item) {
+                    $(this).val('');
+                }
+            },
+            messages: {
+                noResults: '',
+                results: function () { }
+            },
+            minLength: 2,
+            select: function (event, ui) {
+                if (ui.item.value != "") {
+                    $('#SearchCourse').val(ui.item.label);
+                    ShowCourseDetail(ui.item.value);
+                    event.stopPropagation();
+                }
+            },
+            open: function () {
+                $(this).removeClass("ui-corner-all").addClass("ui-corner-top");
+            },
+            close: function () {
+                $(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+            }
+        });
+    });
+    function ShowCourseDetail(id) {
+        $("#body-Content").html();
+        $("#body-Content").html("<div class='taC'><i id='divPageLoader' class='fa fa-spinner fa-spin' style='font-size:30px;'></i></div>");
+        $.ajax({
+            url: "/Datamantra/_CourseDetail",
+            data: { id: id },
+            cache: false,
+            success: function (data) {
+                $('#body-Content').html(data);
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            }
+        });
+        $(window).scrollTop(0);
+        var URL = "/Datamantra/CourseDetail?id=" + id;
+        window.history.pushState({ path: URL }, '', URL);
+    }
+
+    function Login() {
+        $.ajax({
+            url: "/User/_Login",
+            data: {},
+            cache: false,
+            success: function (data) {
+                $('#ModelBody').html(data);
+                $('#myModal').modal({ backdrop: 'static', keyboard: true });
+                $('#myModal').modal("show");
+                $(".modal-dialog").attr('class', 'modal-dialog modal-dialog_lg');
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            }
+        });
+    }
+
+    function Logoff() {
+        location.href = "/User/LogOff";
+
+        //if (obj != null && obj != '' && obj == 'whitelabel') {
+        //    bootbox.dialog({
+        //        onEscape: true,
+        //        title: "Log Off",
+        //        message: "Are you sure you want to log off?",
+        //        buttons: {
+        //            success: {
+        //                label: "Log Off",
+        //                className: "btn_primary btn_sm pull-right",
+        //                callback: function () {
+        //                    location.href = "/user/logoff";
+        //                }
+        //            },
+        //        }
+        //    });
+        //}
+        //else {
+        //    var msg = '<label>Your feedback is really important to us.</label><br/><label>Share your thoughts by filling up the feedback form.</labe>'
+        //    bootbox.dialog({
+        //        onEscape: true,
+        //        title: "Feedback",
+        //        message: msg,
+        //        buttons: {
+        //            success: {
+        //                label: "Feedback",
+        //                className: "btn_third btn_sm pull-left",
+        //                callback: function () {
+        //                    callfeedback();
+        //                }
+        //            },
+        //            main: {
+        //                label: "Log Off",
+        //                className: "btn_primary btn_sm pull-right",
+        //                callback: function () {
+        //                    location.href = "/user/logoff";
+        //                }
+        //            }
+        //        }
+        //    });
+        //}
+    }
+
+    function ForgotPassword() {
+        $.ajax({
+            url: "/User/_ForgotPassword",
+            data: {},
+            cache: false,
+            success: function (data) {
+                $('#ModelBody').html(data);
+                $('#myModal').modal({ backdrop: 'static', keyboard: true });
+                $('#myModal').modal("show");
+                $(".modal-dialog").attr('class', 'modal-dialog modal-dialog_lg');
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            }
+        });
+    }
+
+    function SignUp() {
+        $.ajax({
+            url: "/User/_SignUp",
+            data: {},
+            cache: false,
+            success: function (data) {
+                $('#ModelBody').html(data);
+                $('#myModal').modal({ backdrop: 'static', keyboard: true });
+                $('#myModal').modal("show");
+                $(".modal-dialog").attr('class', 'modal-dialog');
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            }
+        });
+    }
+</script>

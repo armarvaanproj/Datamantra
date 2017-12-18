@@ -1,0 +1,110 @@
+﻿@model IEnumerable<Datamantra.Model.Entity.Role>
+
+
+@*<button type="button" id="btnLogin" onclick="AddNewRole();" class="floatR btn btn-primary text-uppercase marginBottom20"><i class="fa fa-plus"></i> Add New Role</button>*@
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>
+                Roles
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RoleName)
+                </td>
+                @*<td>
+                        <button type="button" id="btnedit" onclick="EditRole('@(item.RoleId)');" class="btn btn-warning text-uppercase"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                        <button type="button" id="btnDelete" onclick="DeleteRole('@(item.RoleId)');" class="btn btn-danger  text-uppercase"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                    </td>*@
+            </tr>
+        }
+    </table>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () { });
+    function EditRole(id) {
+        if (id > 0) {
+            $.ajax({
+                url: "/Admin/_AddRole",
+                data: { id: id },
+                cache: false,
+                success: function (data) {
+                    $('#ModelBody').html(data);
+                    $('#myModal').modal({ backdrop: 'static', keyboard: true });
+                    $('#myModal').modal("show");
+                    $(".modal-dialog").attr('class', 'modal-dialog modal-dialog_lg');
+                },
+                error: function (err) {
+                    console.log(err.responseText);
+                }
+            });
+            var _fullURL = window.location.pathname + "?id=" + id + "&callFrom=EditRole";
+            window.history.pushState({ path: _fullURL }, '', _fullURL);
+        }
+    }
+
+    function ViewRole(id) {
+        if (id > 0) {
+            $("#divPageContent").load("/Admin/_ViewRole?id=" + id);//+ "&t=" + new Date().getTime()
+            var _fullURL = window.location.pathname + "?callFrom=ViewRole&id=" + id;
+            window.history.pushState({ path: _fullURL }, '', _fullURL);
+        }
+    }
+    function AddNewRole() {
+        $.ajax({
+            url: "/Admin/_AddRole",
+            data: {},
+            cache: false,
+            success: function (data) {
+                $('#ModelBody').html(data);
+                $('#myModal').modal({ backdrop: 'static', keyboard: true });
+                $('#myModal').modal("show");
+                $(".modal-dialog").attr('class', 'modal-dialog modal-dialog_lg');
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            }
+        });
+        //$("#divPageContent").load("/Admin/_AddRole");//+ "&t=" + new Date().getTime()
+        var _fullURL = window.location.pathname + "?callFrom=AddRole";
+        window.history.pushState({ path: _fullURL }, '', _fullURL);
+    }
+
+    function DeleteRole(id) {
+        bootbox.confirm({
+            title: 'Delete Role',
+            message: 'Are you sure you want to delete this Role?',
+            buttons: {
+                'cancel': {
+                    label: "No",
+                    className: 'btn-default pull-left'
+                },
+                'confirm': {
+                    label: 'Yes',
+                    className: 'btn-danger pull-right'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    $.ajax({
+                        url: '/Admin/DeleteRoleById',
+                        type: 'GET',
+                        data: { id: id },
+                        async: false,
+                        cache: false,
+                        success: function (data) {
+                            if (data != null && data != undefined && data != "" && data) {
+                                ShowRoles();
+                                toastr.success("Roles are Deleted Successfully!");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+</script>

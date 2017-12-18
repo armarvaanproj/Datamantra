@@ -1,0 +1,90 @@
+﻿@model Datamantra.Model.Entity.Category
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fa fa-close"></i></span></button>
+    <h4 class="modal-title">Add Category</h4>
+</div>
+
+<div class="modal-body">
+    @using (Html.BeginForm("SaveCategory", "Admin", FormMethod.Post, new { @id = "formAddCategory" }))
+    {
+        @Html.HiddenFor(model => model.CategoryId)
+        <div class="form-horizontal">
+            <div class="form-group">
+                @Html.Label("Category Name", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.CategoryName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.CategoryName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="modal-footer taC">
+    <button type="button" id="btnClear" data-dismiss="modal" class="btn btn-default pull-left mTop10" tabindex="4">
+        Cancel
+    </button>
+    <button type="submit" id="btnSaveCategory" onclick="SaveCategory('@Model.CategoryId');" class="btn btn-primary btn-lg text-uppercase">
+        <i id="btnSaveCategoryLoader" style="display:none;" class="floatR mTop5 fa fa-spinner fa-spin mLeft10"></i>
+
+        @if (Model.CategoryId > 0)
+        {
+            <span>Update Category</span>
+        }
+        else
+        {
+            <span>Save Category</span>
+        }
+    </button>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#formAddCategory").validate(
+        {
+            rules: {
+                CategoryName: {
+                    required: true,
+                }
+            },
+            messages: {
+                CategoryName: {
+                    required: 'Please Enter Category Name',
+                }
+            },
+        });
+    });
+
+    function SaveCategory(id) {
+        if ($("#formAddCategory").valid()) {
+            $("#btnSaveCategoryLoader").show();
+            $("#btnSaveCategory").attr('disabled', true);
+            var form = $("#formAddCategory").serialize();
+            $.ajax({
+                url: '/Admin/SaveCategory',
+                type: "POST",
+                beforeSend: function (request) {
+                    request.setRequestHeader("X-Robots-Tag", "noindex, nofollow");
+                },
+                data: form,
+                success: function (data) {
+                    if (data != null && data != false && data != "" && data == true) {
+                        if (id > 0) {
+                            toastr.success("Category updated successfully")
+                        }
+                        else {
+                            toastr.success("Category saved successfully")
+                        }
+                    }
+                    $('#myModal').modal("hide");
+                    $("#btnSaveCategoryLoader").hide();
+                    $("#btnSaveCategory").attr('disabled', false);
+                    ShowCategories();
+                }
+            });
+        }
+    }
+</script>
+
+

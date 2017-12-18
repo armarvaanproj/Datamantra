@@ -1,0 +1,111 @@
+﻿@model Datamantra.Model.Entity.User
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fa fa-close"></i></span></button>
+    <h4 class="modal-title">Login</h4>
+</div>
+
+<div class="modal-body">
+    @using (Html.BeginForm("Login", "User", FormMethod.Post, new { id = "frmUserLogin" }))
+    {
+        <div>
+            <table class="responsive" width="100%">
+                <tr>
+                    <td class="labelName" >
+                        Email:
+                    </td>
+                    <td class="fieldText" >
+                        @Html.TextBoxFor(x => x.EmailAddress, new { @type = "text", @placeholder = "Email Address", @class = "form-control ct-input--type1 input-hg ct-u-marginBottom50", @maxlength = "50", @tabindex = "1", required = "required" })
+                        @Html.ValidationMessageFor(model => model.EmailAddress, "", new { @class = "error" })
+                    </td>
+                </tr>
+                <tr><td class="spacer15"></td></tr>
+                <tr>
+                    <td class="labelName">
+                        Password:
+                    </td>
+                    <td class="fieldText">
+                        @Html.PasswordFor(model => model.Password, new { @type = "password", @placeholder = "Password", @class = "form-control ct-input--type1 input-hg ct-u-marginBottom50", @maxlength = "12", @tabindex = "2", required = "required" })
+                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "error" })
+                    </td>
+                </tr>
+                <tr><td class="spacer15"></td></tr>
+                <tr>
+                    <td colspan="2" class="labelName">
+                        <div class="text-center floatR">
+                            <div class="ct-u-marginTop50">
+                                @*<a onclick="ForgotPassword();"><i class="fa fa-info-circle"></i> Forgot Password ?</a>*@
+                                <a onclick="SignUp();" style="cursor:pointer;"><i class="fa fa-long-arrow-right"></i> Register Now ?</a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+</div>
+
+<div class="modal-footer text-right">
+    <button type="button" id="btnClear" data-dismiss="modal" class="btn btn-default pull-left mTop10" tabindex="4">
+        Cancel
+    </button>
+    <button type="submit" id="btnLogin" onclick="CallLogin();" class="btn btn-primary text-uppercase"><i id="btnLoginLoader" style="display:none;" class="floatR mTop5 fa fa-spinner fa-spin mLeft10"></i><span>Sign In</span></button>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".modal-dialog").addClass("modal-dialog-small");
+        $("#frmUserLogin").validate(
+        {
+            rules: {
+                EmailAddress: {
+                    required: true,
+                    email: true,
+                },
+                Password: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 12,
+                    //regex: "[A-Za-z0-9*|\\u0440#$!%&()+<>:]{6,20}$",
+                }
+            },
+            messages: {
+                EmailAddress: {
+                    required: 'Enter Email Address',
+                    email: 'Please enter valid email Address'
+                },
+                Password: {
+                    required: 'Enter the Password',
+                    minlength: 'Password should not less than 5 letters',
+                    maxlength: 'Password should not exceeds than 6 letters',
+                    //  regex: 'Invalid Password'
+                }
+            },
+        });
+    });
+
+
+    function CallLogin() {
+        if ($("#frmUserLogin").valid()) {
+            $("#btnLoginLoader").show();
+            $("#btnLogin").attr('disabled', true);
+            var form = $("#frmUserLogin").serialize();
+            $.ajax({
+                url: '/User/Login',
+                type: "POST",
+                beforeSend: function (request) {
+                    request.setRequestHeader("X-Robots-Tag", "noindex, nofollow");
+                },
+                data: form,
+                success: function (data) {
+                    $('#myModal').modal("hide");
+                    $("#btnLoginLoader").hide();
+                    $("#btnLogin").attr('disabled', false);
+                    if (data != null && data != false && data != "") {
+                        location.href = '/Datamantra/Courses';
+                    }
+                    
+                }
+            });
+        }
+    }
+</script>

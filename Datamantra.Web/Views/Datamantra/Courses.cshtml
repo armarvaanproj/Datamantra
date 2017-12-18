@@ -1,0 +1,354 @@
+﻿@model List<Datamantra.Model.Entity.Category>
+@using Datamantra.Common
+@if (Utility.GetUserIdFromSession() != null && Utility.GetUserIdFromSession() > 0)
+{
+    ViewBag.Title = "Courses";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!--innerpage header start-->
+<section class="inr_page_title">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-7 col-sm-7 col-xs-12">
+                    <h2>List Of Courses</h2>
+                </div>
+                <div class="col-md-5 col-sm-5 col-xs-12">
+                    <h4>Courses/List Of Courses</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--inner page header end-->
+@if (Model != null && Model.Count > 0)
+{
+    var CategoryId = Model.OrderBy(x => x.CategoryName).FirstOrDefault().CategoryId;
+     <!--course list start-->
+    <section id="portfolio-container" class="sec_pad">
+        <div class="container">
+            <div class="col-md-4 col-sm-4 col-xs-12 categories">
+                <h4 class="cat_title text-uppercase">Categories</h4>
+                <div class="divider--dark marginBoth30"></div>
+                <ul>
+                    @foreach (var item in Model.OrderBy(x => x.CategoryName))
+                    {
+                        <li id="@(item.CategoryId)" onclick="OpenSource('@(item.CategoryId)')"><a href="javascript:void(0);" class="active fil-cat" data-rel="all"><i class="fa fa-angle-right"></i>@item.CategoryName</a></li>
+                        if (item.SubCategorylst != null && item.SubCategorylst.Count > 0)
+                        {
+                            <ul>
+                                @foreach (var subitem in item.SubCategorylst)
+                                {
+                                    <li id="@(item.CategoryId)"><a href="#"><i class="fa fa-angle-right"></i>@item.CategoryName</a></li>
+                                }
+                            </ul>
+                        }
+                    }
+
+                    @*<li><a href="javascript:void(0);" class="fil-cat" data-rel="creative"><i class="fa fa-angle-right"></i>Creative</a></li>
+                        <li><a href="javascript:void(0);" class="fil-cat" data-rel="design"><i class="fa fa-angle-right"></i>Creative1</a></li>
+                        <li><a href="javascript:void(0);" class="fil-cat" data-rel="develop"><i class="fa fa-angle-right"></i>Creative2</a></li>
+                        <li><a href="javascript:void(0);" class="fil-cat" data-rel="animation"><i class="fa fa-angle-right"></i>Creative3</a></li>*@
+                </ul>
+            </div>
+            <div class="col-md-8 col-sm-8 col-xs-12" id="portfolio">
+                <div id="divPageContent" class="ct-productBox ct-productBox--inline ct-u-displayTable ct-u-marginBottom30">
+                    @{Html.RenderAction("_ShowCourses", "Datamantra", new { CategoryId = CategoryId });}
+                </div>
+                @*<section class="tile scale-anm web all creative col-md-6 col-sm-6 col-xs-12">
+                        <div class="productBox marginBottom30">
+                            <a href="course-single.html">
+                                <div class="productImage">
+                                    <img alt="Product" src="ss" height="150">
+                                </div>
+                                <div class="productDescription">
+                                    <h5 class="marginBottom10">Social Media Management</h5>
+                                    <span>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean .</span>
+                                </div>
+                            </a>
+                            <div class="productMeta">
+                                <div class="displayTableVertical">
+                                    <div class="displayTableCell">
+                                        <div data-rating="4" class="starrr"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa-star-o fa"></i></div>
+                                    </div>
+                                    <div class="displayTableCell">
+                                        <span class="colorMotive">190$</span>
+                                        <span class="textLineThrough">290$</span>
+                                    </div>
+                                    <div class="displayTableCell">
+                                        <a href="#">
+                                            15 <i class="fa fa-user"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="tile scale-anm bcards design col-md-6 col-sm-6 col-xs-12 ">
+                        <div class="productBox marginBottom30">
+                            <a href="course-single.html">
+                                <div class="productImage">
+                                    <img alt="Product" src="ss" height="150">
+                                </div>
+                                <div class="productDescription">
+                                    <h5 class="marginBottom10">Social Media Management</h5>
+                                    <span>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean .</span>
+                                </div>
+                            </a>
+                            <div class="productMeta">
+                                <div class="displayTableVertical">
+                                    <div class="displayTableCell">
+                                        <div data-rating="4" class="starrr"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa-star-o fa"></i></div>
+                                    </div>
+                                    <div class="displayTableCell">
+                                        <span class="colorMotive">190$</span>
+                                        <span class="textLineThrough">290$</span>
+                                    </div>
+                                    <div class="displayTableCell">
+                                        <a href="#">
+                                            15 <i class="fa fa-user"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="col-md-6 col-sm-6 col-xs-12  scale-anm web develop">
+                        <div class="productBox marginBottom30">
+                            <a href="course-single.html">
+                                <div class="productImage">
+                                    <img alt="Product" src="ss" height="150">
+                                </div>
+                                <div class="productDescription">
+                                    <h5 class="marginBottom10">Social Media Management</h5>
+                                    <span>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean .</span>
+                                </div>
+                            </a>
+                            <div class="productMeta">
+                                <div class="displayTableVertical">
+                                    <div class="displayTableCell">
+                                        <div data-rating="4" class="starrr"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa-star-o fa"></i></div>
+                                    </div>
+                                    <div class="displayTableCell">
+                                        <span class="colorMotive">190$</span>
+                                        <span class="textLineThrough">290$</span>
+                                    </div>
+                                    <div class="displayTableCell">
+                                        <a href="#">
+                                            15 <i class="fa fa-user"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="col-md-6 col-sm-6 col-xs-12scale-anm web animation">
+                        <div class="productBox marginBottom30">
+                            <a href="course-single.html">
+                                <div class="productImage">
+                                    <img alt="Product" src="ss" height="150">
+                                </div>
+                                <div class="productDescription">
+                                    <h5 class="marginBottom10">Social Media Management</h5>
+                                    <span>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean .</span>
+                                </div>
+                            </a>
+                            <div class="productMeta">
+                                <div class="displayTableVertical">
+                                    <div class="displayTableCell">
+                                        <div data-rating="4" class="starrr"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa-star-o fa"></i></div>
+                                    </div>
+                                    <div class="displayTableCell">
+                                        <span class="colorMotive">190$</span>
+                                        <span class="textLineThrough">290$</span>
+                                    </div>
+                                    <div class="displayTableCell">
+                                        <a href="#">
+                                            15 <i class="fa fa-user"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="col-md-6 col-sm-6 col-xs-12 scale-anm web all creative">
+                        <div class="productBox marginBottom30">
+                            <a href="course-single.html">
+                                <div class="productImage">
+                                    <img alt="Product" src="ss" height="150">
+                                </div>
+                                <div class="productDescription">
+                                    <h5 class="marginBottom10">Social Media Management</h5>
+                                    <span>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean .</span>
+                                </div>
+                            </a>
+                            <div class="productMeta">
+                                <div class="displayTableVertical">
+                                    <div class="displayTableCell">
+                                        <div data-rating="4" class="starrr"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa-star-o fa"></i></div>
+                                    </div>
+                                    <div class="displayTableCell">
+                                        <span class="colorMotive">190$</span>
+                                        <span class="textLineThrough">290$</span>
+                                    </div>
+                                    <div class="displayTableCell">
+                                        <a href="#">
+                                            15 <i class="fa fa-user"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="col-md-6 col-sm-6 col-xs-12 scale-anm bcards design">
+                        <div class="productBox marginBottom30">
+                            <a href="course-single.html">
+                                <div class="productImage">
+                                    <img alt="Product" src="ss" height="150">
+                                </div>
+                                <div class="productDescription">
+                                    <h5 class="marginBottom10">Social Media Management</h5>
+                                    <span>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean .</span>
+                                </div>
+                            </a>
+                            <div class="productMeta">
+                                <div class="displayTableVertical">
+                                    <div class="displayTableCell">
+                                        <div data-rating="4" class="starrr"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa-star-o fa"></i></div>
+                                    </div>
+                                    <div class="displayTableCell">
+                                        <span class="colorMotive">190$</span>
+                                        <span class="textLineThrough">290$</span>
+                                    </div>
+                                    <div class="displayTableCell">
+                                        <a href="#">
+                                            15 <i class="fa fa-user"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="col-md-6 col-sm-6 col-xs-12 scale-anm web develop">
+                        <div class="productBox marginBottom30">
+                            <a href="course-single.html">
+                                <div class="productImage">
+                                    <img alt="Product" src="ss" height="150">
+                                </div>
+                                <div class="productDescription">
+                                    <h5 class="marginBottom10">Social Media Management</h5>
+                                    <span>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean .</span>
+                                </div>
+                            </a>
+                            <div class="productMeta">
+                                <div class="displayTableVertical">
+                                    <div class="displayTableCell">
+                                        <div data-rating="4" class="starrr"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa-star-o fa"></i></div>
+                                    </div>
+                                    <div class="displayTableCell">
+                                        <span class="colorMotive">190$</span>
+                                        <span class="textLineThrough">290$</span>
+                                    </div>
+                                    <div class="displayTableCell">
+                                        <a href="#">
+                                            15 <i class="fa fa-user"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="col-md-6 col-sm-6 col-xs-12 scale-anm web animation">
+                        <div class="productBox marginBottom30">
+                            <a href="course-single.html">
+                                <div class="productImage">
+                                    <img alt="Product" src="ss" height="150">
+                                </div>
+                                <div class="productDescription">
+                                    <h5 class="marginBottom10">Social Media Management</h5>
+                                    <span>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean .</span>
+                                </div>
+                            </a>
+                            <div class="productMeta">
+                                <div class="displayTableVertical">
+                                    <div class="displayTableCell">
+                                        <div data-rating="4" class="starrr"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa-star-o fa"></i></div>
+                                    </div>
+                                    <div class="displayTableCell">
+                                        <span class="colorMotive">190$</span>
+                                        <span class="textLineThrough">290$</span>
+                                    </div>
+                                    <div class="displayTableCell">
+                                        <a href="#">
+                                            15 <i class="fa fa-user"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>*@
+            </div>
+        </div>
+    </section>
+    <!--course list end-->
+
+    @*<div class="container">
+            <div class="row">
+                <div id="divAllCourses" class="col-lg-4">
+                    <div class="ct-sidebar">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-12">
+                                <section class="widget ct-widget-categories ct-u-marginBottom100">
+                                    <div class="widget-inner">
+                                        <h4 class="text-uppercase ct-u-textNormal ct-fw-900">Categories</h4>
+                                        <div class="ct-divider--dark ct-u-marginBoth30"></div>
+                                        <ul class="list-unstyled ct-fw-400">
+                                            @foreach (var item in Model)
+                                            {
+                                                <li id="@(item.CategoryId)" onclick="OpenSource('@(item.CategoryId)')"><a href="#"><i class="fa fa-angle-right"></i>@item.CategoryName</a></li>
+                                                if (item.SubCategorylst != null && item.SubCategorylst.Count > 0)
+                                                {
+                                                    <ul>
+                                                        @foreach (var subitem in item.SubCategorylst)
+                                                        {
+                                                            <li id="@(item.CategoryId)"><a href="#"><i class="fa fa-angle-right"></i>@item.CategoryName</a></li>
+                                                        }
+                                                    </ul>
+                                                }
+                                            }
+                                        </ul>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+
+                </div>
+            </div>
+        </div>*@
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+    });
+
+    function OpenSource(obj) {
+        $("#divPageContent").html();
+        $("#divPageContent").html("<div class='taC'><i id='divPageLoader' class='fa fa-spinner fa-spin' style='font-size:30px;'></i></div>");
+        $.ajax({
+            url: "/Datamantra/_ShowCourses",
+            cache: false,
+            data: { CategoryId: obj },
+            success: function (data) {
+                $('#divPageContent').html(data);
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            }
+        });
+        var URL = "/Datamantra/Courses/?callFrom=" + obj;
+        window.history.pushState({ path: URL }, '', URL);
+    }
+</script>

@@ -1,0 +1,154 @@
+﻿@model List<Datamantra.Model.Entity.Category>
+@{
+    ViewBag.Title = "Admin";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<section class="inr_page_title">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-7 col-sm-7 col-xs-12">
+                    <h2>List Of Categories</h2>
+                </div>
+                <div class="col-md-5 col-sm-5 col-xs-12 text-right">
+                    <h4>Home/Categories</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="container sec_pad adminbg">
+
+        <div id="divPageLeftMenu" class="col-md-3 col-sm-4 col-xs-12 categories">
+            <div class="sidebar">
+                <div class="row">
+                    <div class="col-sm-6 col-md-12">
+                        <section class="widget widget-categories marginBottom100">
+                            <div class="widget-inner">
+                                <h4 class="cat_title text-uppercase">Categories</h4>
+                                <div class="divider--dark marginBoth30"></div>
+                                <ul>
+                                    <li onclick="ShowCourse()"><a href="javascript:void(0);"><i class="fa fa-angle-right"></i>Course</a></li>
+                                    <li onclick="ShowCategories()"><a href="javascript:void(0);"><i class="fa fa-angle-right"></i>Category</a></li>
+                                    <li onclick="ShowUser('3',true)"><a href="javascript:void(0);"><i class="fa fa-angle-right"></i>Student</a></li>
+                                    <li onclick="ShowUser('2',true)"><a href="javascript:void(0);"><i class="fa fa-angle-right"></i>Staff</a></li>
+                                    <li onclick="ShowRoles()"><a href="javascript:void(0);"><i class="fa fa-angle-right"></i>Roles</a></li>
+                                    <li onclick="ShowUserRoles()"><a href="javascript:void(0);"><i class="fa fa-angle-right"></i>Users & Roles</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9 col-sm-8 col-xs-12 no-pad">
+            <div id="divPageContent" class="">
+                @{Html.RenderAction("_AllCourse", "Admin");}
+            </div>
+        </div>
+  
+</div>
+<script type="text/javascript">
+    $(document).ready(function () { });
+    function ShowRoles() {
+        $("#divPageContent").html();
+        $("#divPageContent").html("<div class='taC'><i id='divPageLoader' class='fa fa-spinner fa-spin' style='font-size:30px;'></i></div>");
+        $.ajax({
+            url: "/Admin/_AllRoles",
+            cache: false,
+            success: function (data) {
+                $('#divPageContent').html(data);
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            }
+        });
+        $(window).scrollTop(0);
+        var URL = "/Admin/Index/?callFrom=Roles";
+        window.history.pushState({ path: URL }, '', URL);
+    }
+    
+    function ShowUserRoles() {
+        $("#divPageContent").html();
+        $("#divPageContent").html("<div class='taC'><i id='divPageLoader' class='fa fa-spinner fa-spin' style='font-size:30px;'></i></div>");
+        $.ajax({
+            url: "/Admin/_AllUserRoles",
+            cache: false,
+            success: function (data) {
+                $('#divPageContent').html(data);
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            }
+        });
+        $(window).scrollTop(0);
+        var URL = "/Admin/Index/?callFrom=UserRoles";
+        window.history.pushState({ path: URL }, '', URL);
+    }
+
+    function ShowCourse() {
+        $("#divPageContent").html();
+        $("#divPageContent").html("<div class='taC'><i id='divPageLoader' class='fa fa-spinner fa-spin' style='font-size:30px;'></i></div>");
+        $.ajax({
+            url: "/Admin/_AllCourse",
+            cache: false,
+            success: function (data) {
+                $('#divPageContent').html(data);
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            }
+        });
+        $(window).scrollTop(0);
+        var URL = "/Admin/Index/?callFrom=Course";
+        window.history.pushState({ path: URL }, '', URL);
+    }
+
+    function ShowCategories() {
+        $("#divPageContent").html();
+        $("#divPageContent").html("<div class='taC'><i id='divPageLoader' class='fa fa-spinner fa-spin' style='font-size:30px;'></i></div>");
+        $.ajax({
+            url: "/Admin/_AllCategories",
+            cache: false,
+            success: function (data) {
+                $('#divPageContent').html(data);
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            }
+        });
+        $(window).scrollTop(0);
+        var URL = "/Admin/Index/?callFrom=Roles";
+        window.history.pushState({ path: URL }, '', URL);
+    }
+    function ShowUser(id, ActiveStatus) {
+        $("#divPageContent").html();
+        $("#divPageContent").html("<div class='taC'><i id='divPageLoader' class='fa fa-spinner fa-spin' style='font-size:30px;'></i></div>");
+        $.ajax({
+            url: "/Admin/_AllUserbyRoleId",
+            cache: false,
+            data: { id: id, ActiveStatus: ActiveStatus },
+            success: function (data) {
+                $('#divPageContent').html(data);
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            }
+        });
+        $(window).scrollTop(0);
+        var URL = "/Admin/Index/?callFrom=";
+        if (id = 2)
+        { URL += "Staffs" }
+        else
+        {
+            URL += "Students"
+        }
+
+
+        var URL = "/Admin/Index/?callFrom=Students";
+        window.history.pushState({ path: URL }, '', URL);
+    }
+
+
+
+</script>

@@ -1,0 +1,221 @@
+﻿@model List<Datamantra.Model.Entity.Review>
+@using Datamantra.Common
+@Scripts.RenderFormat(@"<script src=""{0}"" async></script>", "~/bundles/rateitjs")
+@{
+    long UserId = (long)Utility.GetUserIdFromSession();
+    long CourseId = (ViewData["CourseId"] != null && !string.IsNullOrEmpty(ViewData["CourseId"].ToString())) ? Utility.GetLong(ViewData["CourseId"]) : 0;
+    decimal overallrating = 0;
+}
+<div class="clear"></div>
+
+@if (Model != null && Model.Count > 0)
+{
+    overallrating = (Model.Sum(x => x.Rating) / Model.Count);
+    <div id="DivWriteReview" class="row">
+        <div class="col-sm-12">
+            <input type="range" min="0" max="5" value="0" step="0.5" id="ratingstar">
+            <div class="rateit" data-rateit-backingfld="#ratingstar" data-rateit-min="0"></div>
+        </div>
+        <div class="col-sm-10">
+            @Html.TextArea("txtReview", new { @placeholder = "Write a comments", @style = "width:100%" })
+            @Html.ValidationMessage("errorReview", "Please enter the comments", new { @id = "errorReview", @class = "text-danger", @style = "display:none;" })
+        </div>
+        <div class="col-sm-2">
+            <button type="button" id="btnSave" onclick="SaveReview('@CourseId',0,this);" class="btn btn-primary text-uppercase">Save Review</button>
+        </div>
+    </div>
+    foreach (var item in Model.OrderByDescending(x => x.CreatedDate).ToList())
+    {
+        <div class="row">
+            @if (UserId == item.UserId)
+            {
+                <div class="col-sm-3">
+                    <i class="fa fa-user" aria-hidden="true"></i>@item.UserName
+                </div>
+                <div class="col-sm-9">@item.CreatedDate</div>
+                <div class="rateit col-sm-10" id="showrating@(item.ReviewId)" data-rateit-value="@item.Rating" data-rateit-ispreset=" true" data-rateit-readonly="true"></div>
+                <div id="divcomments@(item.ReviewId)">
+                    <div class="col-sm-10">
+                        <div class="alert alert-info">
+                            <strong></strong> @item.Comments
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" id="btnedit" onclick="EditReview('@(item.ReviewId)');" class="btn btn-primary text-uppercase"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                        <button type="button" id="btnDelete" onclick="DeleteReview('@(item.ReviewId)');" class="btn btn-primary text-uppercase"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+                <div id="DivStarRating@(item.ReviewId)" class="col-sm-12" style="display:none;">
+                    <input type="range" min="0" max="5" value="@item.Rating" step="0.5" id="ratingstar@(item.ReviewId)">
+                    <div class="rateit" data-rateit-backingfld="#ratingstar@(item.ReviewId)" data-rateit-min="0"></div>
+                </div>
+
+                <div id="DivWriteReview@(item.ReviewId)" style="display:none;">
+                    <div class="col-sm-10">
+                        @Html.TextArea("txtReview" + item.ReviewId, item.Comments, new { @placeholder = "Write a comments", @style = "width:100%" })
+                        @Html.ValidationMessage("errorReview" + item.ReviewId, "Please enter the comments", new { @id = "errorReview" + item.ReviewId, @class = "text-danger", @style = "display:none;" })
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" id="btnSave@(item.ReviewId)" onclick="SaveReview('@CourseId',@item.ReviewId,this);" class="btn btn-primary text-uppercase"><i class="fa fa-check" aria-hidden="true"></i></button>
+                        <button type="button" id="btnCancel" onclick="Cancel('@(item.ReviewId)');" class="btn btn-primary text-uppercase"><i class="fa fa-window-close" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-sm-3">
+                    <i class="fa fa-user" aria-hidden="true"></i>@item.UserName
+                </div>
+                <div class="col-sm-9">@item.CreatedDate</div>
+                <div class="rateit col-sm-12" id="showrating@(item.ReviewId)" data-rateit-value="@item.Rating" data-rateit-ispreset="true" data-rateit-readonly="true"></div>
+                <div class="col-sm-12">
+                    <div class="alert alert-info">
+                        <strong></strong> @item.Comments
+                    </div>
+                </div>
+            }
+        </div>
+    }
+}
+else
+{
+
+    <div id="DivStarRating" class="row col-sm-12">
+        <input type="range" min="0" max="5" value="0" step="0.5" id="ratingstar">
+        <div class="rateit" data-rateit-backingfld="#ratingstar" data-rateit-min="0"></div>
+    </div>
+
+    <div id="DivWriteReview" class="row">
+        <div class="col-sm-10">
+            @Html.TextArea("txtReview", new { @placeholder = "Write a comments", @style = "width:100%" })
+            @Html.ValidationMessage("errorReview", "Please enter the comments", new { @id = "errorReview", @class = "text-danger", @style = "display:none;" })
+        </div>
+        <div class="col-sm-2">
+            <button type="button" id="btnSave" onclick="SaveReview('@CourseId',0,this)" class="btn btn-primary text-uppercase">Save Review</button>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#spanCourseRating').rateit('value', '@overallrating');
+        $('#spanReviewCount').html('@Model.Count' + ' Reviews');
+        $("input[name^='txtReview']").change(function () {
+            if ($('#txtReview').val().length > 0) {
+                var res = $(this).attr('id').replace(/[^0-9\.]+/g, "");
+                $('#errorReview' + res).hide();
+            }
+        })
+
+    });
+    function EditReview(id) {
+        if (id > 0) {
+            $("#DivWriteReview" + id).show();
+            $("#DivStarRating" + id).show();
+            $("#divcomments" + id).hide();
+            $("#showrating" + id).hide();
+        }
+    }
+
+    function Cancel(id) {
+        if (id > 0) {
+            $("#DivWriteReview" + id).hide();
+            $("#DivStarRating" + id).hide();
+            $("#divcomments" + id).show();
+            $("#showrating" + id).show();
+        }
+    }
+
+    function SaveReview(id1, id2, obj) {
+        var res = $(obj).attr('id').replace(/[^0-9\.]+/g, "");
+        if ('@UserId' > 0) {
+
+            if ($('#txtReview' + res).val() != null && $('#txtReview' + res).val() != '' && $('#txtReview' + res).val() != undefined) {
+                var rating = rating = $('#ratingstar').val()
+                if (id2 != null && id2 != undefined && id2 != "" && id2 > 0) {
+                    rating = $('#ratingstar' + id2).val()
+                }
+                var form = $("#formAddCourse").serialize();
+                $.ajax({
+                    url: "/User/SaveReview",
+                    type: "POST",
+                    beforeSend: function (request) {
+                        request.setRequestHeader("X-Robots-Tag", "noindex, nofollow");
+                    },
+                    data: { comments: $('#txtReview' + res).val(), courseId: id1, reviewId: id2, rating: rating },
+                    cache: false,
+                    success: function (data) {
+                        toastr.success("Comments are Saved Successfully!");
+                        ShowReviews(id1);
+                    },
+                    error: function (err) {
+                        console.log(err.responseText);
+                    }
+                });
+            }
+            else {
+                $('#errorReview' + res).show();
+                //toastr.error("Please enter the comments");
+            }
+        }
+        else {
+            Login();
+        }
+    }
+
+    function WriteReview() {
+        //$.ajax({
+        //    url: "/Admin/_AddCourse",
+        //    data: {},
+        //    cache: false,
+        //    success: function (data) {
+        //        $('#ModelBody').html(data);
+        //        $('#myModal').modal({ backdrop: 'static', keyboard: true });
+        //        $('#myModal').modal("show");
+        //        $(".modal-dialog").attr('class', 'modal-dialog modal-dialog_lg');
+        //    },
+        //    error: function (err) {
+        //        console.log(err.responseText);
+        //    }
+        //});
+
+        $("#DivWriteReview").Show();
+        var _fullURL = window.location.pathname + "?callFrom=AddCourse";
+        window.history.pushState({ path: _fullURL }, '', _fullURL);
+    }
+
+    function DeleteReview(id) {
+        //id=Review Id
+        bootbox.confirm({
+            title: 'Delete Course',
+            message: 'Are you sure you want to delete this Comments?',
+            buttons: {
+                'cancel': {
+                    label: "No",
+                    className: 'btn-default pull-left'
+                },
+                'confirm': {
+                    label: 'Yes',
+                    className: 'btn-danger pull-right'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    $.ajax({
+                        url: '/User/DeleteReviewbyReviewId',
+                        type: 'GET',
+                        data: { id: id },
+                        async: false,
+                        cache: false,
+                        success: function (data) {
+                            if (data != null && data != undefined && data != "" && data) {
+                                ShowReviews('@CourseId');
+                                toastr.success("Comments are Deleted Successfully!");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+</script>

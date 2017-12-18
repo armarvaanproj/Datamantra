@@ -1,0 +1,64 @@
+﻿@model List<Datamantra.Model.Entity.Course>
+@{
+    ViewBag.Title = "Courses";
+}
+
+<div class="textBox textBox--thin">
+    <div class="textBox--heading">
+        <h4 class="fw-700 colorMotive">Courses Made By Member</h4>
+        <div class="textBox--withNumber">
+            <span class="fw-700">@Model.Count</span>
+        </div>
+    </div>
+    <div class="padding70">
+        @if (Model != null && Model.Count > 0)
+        {
+            foreach (var item in Model)
+            {
+                <div class="productBox productBox--inline displayTable marginBottom30">
+                    <div class="displayTableCell">
+                        <div class="productImage">
+                            <a href="/Datamantra/CourseDetail?id=@(item.CourseId)">
+                                <img src="assets/images/demo-content/produinline1.jpg" alt="Product">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="displayTableCell">
+                        <div class="productDescription">
+                            <a href="course-single.html"><h5 class="fw-600 marginBottom10">@item.CourseName</h5></a>
+                            <span>
+                                @item.ShortDescription
+                            </span>
+                        </div>
+                        <div class="productMeta">
+                            <div class="displayTableVertical">
+                                <div class="displayTableCell">
+                                    <div class="starrr" data-rating="4"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa-star-o fa"></i></div>
+                                </div>
+                                <div class="displayTableCell">
+                                    <span class="colorMotive">@item.Price$</span>
+                                    <span class="textLineThrough">@item.DiscountedPrice$</span>
+                                </div>
+                                <div class="displayTableCell">
+                                    <a>
+                                        <i class="fa fa-user"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p> sorry no courses are found</p>
+        }
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+    });
+</script>

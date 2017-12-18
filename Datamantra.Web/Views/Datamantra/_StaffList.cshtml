@@ -1,0 +1,60 @@
+﻿@model List<Datamantra.Model.Entity.User>
+@{
+    ViewBag.Title = "Courses";
+}
+
+@if (Model != null && Model.Count > 0)
+{
+    foreach (var item in Model)
+    {
+        <div class="personMedia displayTableVertical">
+            <div class="displayTableCell">
+                <div class="personImage">
+                    <img src="assets/images/demo-content/personBoxImage1-circle.jpg" alt="person">
+                </div>
+            </div>
+            <div class="displayTableCell">
+                <div class="personName">
+                    <span class="personName--title fw-700">
+                        @item.UserName
+                    </span>
+                    <span class="personName--meta text-lowercase">
+                        @item.Designation
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="personDescription">
+            <p>
+                @item.Description  @*<a href="#">Moree..</a>*@
+            </p>
+        </div>
+
+        @*<div class="ct-personMedia ct-u-displayTableVertical">
+                <div class="ct-u-displayTableCell">
+                    <div class="ct-personImage">
+                        <img src="assets/images/demo-content/personBoxImage1-circle.jpg" alt="person">
+                    </div>
+                </div>
+                <div class="ct-u-displayTableCell">
+                    <div class="ct-personName">
+                        <span class="ct-personName--title ct-fw-700">
+                            @item.UserName
+                        </span>
+                        <span class="ct-personName--meta text-lowercase">
+                            @item.Designation
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="ct-personDescription">
+                <p>
+                    @item.Description
+                </p>
+            </div>*@
+    }
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+    });
+</script>

@@ -1,0 +1,179 @@
+﻿@model Datamantra.Model.Entity.User
+@{
+    ViewBag.Title = "Professors";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+ 
+@if (Model != null)
+{
+    <!--innerpage header start-->
+    <section class="inr_page_title">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-7 col-sm-7 col-xs-12">
+                        <h2>Professors</h2>
+                    </div>
+                    <div class="col-md-5 col-sm-5 col-xs-12">
+                        <h4>Home/Professors/@Model.UserName</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--inner page header end-->
+    <section class="backgroundLightGreen">
+        <div class="personBox personBox--inline personBox--inlineDescription">
+            <div class="container">
+                <div class="personMedia displayTableVertical">
+                    <div class="displayTableCell">
+                        <div class="personImage">
+                            <img src="assets/images/demo-content/single-member.jpg" alt="person">
+                        </div>
+                    </div>
+                    <div class="displayTableCell">
+                        <div class="personName marginBottom20">
+                            <span class="personName--title fw-700 marginBottom20">
+                                @Model.UserName
+                            </span>
+                            <span class="personName--meta fw-600">
+                               @Model.Designation 
+                            </span>
+                        </div>
+                        <div class="personDescription">
+                            <p class="fw-300">
+                              @Model.Description
+                            </p>
+                        </div>
+                    </div>
+                    <div class="displayTableCell">
+                        <ul class="socials--singleMember list-unstyled">
+                            <li><a href="http://www.createit.pl/"><i class="fa fa-wordpress"></i></a></li>
+                            <li><a href="#"><i class="fa fa-cloud"></i></a></li>
+                            <li><a href="https://twitter.com/createitpl"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container paddingBoth100">
+            <div class="row">
+                @*<div class="col-md-4">
+                    <div class="textBox textBox--thin">
+                        <div class="textBox--heading">
+                            <h4 class="fw-700 colorMotive">Courses Finished</h4>
+                            <div class="textBox--withNumber">
+                                <span class="fw-700">5</span>
+                            </div>
+                        </div>
+                        <ul class="list-unstyled list-bordered">
+                            <li><a href="#">HTML</a></li>
+                            <li><a href="#">CSS</a></li>
+                            <li><a href="#">Adobe Photoshop</a></li>
+                            <li><a href="#">jQuery</a></li>
+                            <li><a href="#">Java</a></li>
+                        </ul>
+                    </div>
+                </div>*@
+                <div class="col-md-12">
+                    @*<div class="textBox textBox--thin marginBottom30">
+                        <div class="textBox--heading">
+                            <h4 class="fw-700 colorMotive">Badges</h4>
+                            <div class="textBox--withNumber">
+                                <span class="fw-700">8</span>
+                            </div>
+                        </div>
+                        <div class="badgeBox">
+                            <div class="iconBox iconBox--normal iconBox--solidDark">
+                                <div class="icon">
+                                    <img src="assets/images/demo-content/badge1.png" alt="icon">
+                                </div>
+                            </div>
+                            <div class="iconBox iconBox--normal iconBox--solidDark">
+                                <div class="icon">
+                                    <img src="assets/images/demo-content/badge2.png" alt="icon">
+                                </div>
+                            </div>
+                            <div class="iconBox iconBox--normal iconBox--solidDark">
+                                <div class="icon">
+                                    <img src="assets/images/demo-content/badge3.png" alt="icon">
+                                </div>
+                            </div>
+                            <div class="iconBox iconBox--normal iconBox--solidDark">
+                                <div class="icon">
+                                    <img src="assets/images/demo-content/badge4.png" alt="icon">
+                                </div>
+                            </div>
+                            <div class="iconBox iconBox--normal iconBox--solidDark">
+                                <div class="icon">
+                                    <img src="assets/images/demo-content/badge3.png" alt="icon">
+                                </div>
+                            </div>
+                            <div class="iconBox iconBox--normal iconBox--solidDark">
+                                <div class="icon">
+                                    <img src="assets/images/demo-content/badge5.png" alt="icon">
+                                </div>
+                            </div>
+                            <div class="iconBox iconBox--normal iconBox--solidDark">
+                                <div class="icon">
+                                    <img src="assets/images/demo-content/badge6.png" alt="icon">
+                                </div>
+                            </div>
+                            <div class="iconBox iconBox--normal iconBox--solidDark">
+                                <div class="icon">
+                                    <img src="assets/images/demo-content/badge7.png" alt="icon">
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
+                    <div>@{Html.RenderAction("_CourseListByStaffId", "Datamantra", new { id = Model.UserId });}</div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @*<div class="container">
+        <div class="row">
+            <div class="personBox personBox--inline personBox--inlineDescription">
+                <div class="container">
+                    <div class="personMedia displayTableVertical">
+                        <div class="displayTableCell">
+                            <div class="personImage">
+                                <img src="assets/images/demo-content/single-member.jpg" alt="person">
+                            </div>
+                        </div>
+                        <div class="displayTableCell">
+                            <div class="personName marginBottom20">
+                                <span class="personName--title fw-700 marginBottom20">
+                                    @Model.UserName
+                                </span>
+                                <span class="personName--meta fw-600">
+                                    @Model.Designation
+                                </span>
+                            </div>
+                            <div class="personDescription">
+                                <p class="fw-300">
+                                    @Model.Description
+                                </p>
+                            </div>
+                        </div>
+                        <div class="sidebar">
+                            @{Html.RenderAction("_CourseListByStaffId", "Datamantra", new { id = Model.UserId });}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+}
+else
+{
+    <p>No Staff found</p>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+    });
+</script>

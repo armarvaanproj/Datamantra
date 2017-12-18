@@ -1,0 +1,125 @@
+﻿@model List<Datamantra.Model.Entity.Course>
+@{
+    ViewBag.Title = "Courses";
+}
+
+@if (Model != null && Model.Count > 0)
+{
+    foreach (var item in Model)
+    {
+        <section class="tile scale-anm web all creative col-md-6 col-sm-6 col-xs-12">
+            <div class="productBox marginBottom30">
+                <a href="/Datamantra/CourseDetail?id=@(item.CourseId)">
+                    <div class="productImage">
+                        <img alt="Product" src="ss" height="150">
+                    </div>
+                    <div class="productDescription">
+                        <h5 class="marginBottom10">@item.CourseName</h5>
+                        <span>@item.ShortDescription</span>
+                    </div>
+                </a>
+                <div class="productMeta">
+                    <div class="displayTableVertical">
+                        <div class="displayTableCell">
+                            <div data-rating="4" class="starrr"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa-star-o fa"></i></div>
+                        </div>
+                        <div class="displayTableCell">
+                            <span class="colorMotive">@item.Price$</span>
+                            <span class="textLineThrough">@item.DiscountedPrice$</span>
+                        </div>
+                        <div class="displayTableCell">
+                            <a href="#">
+                                15 @*@item.EnrolledCount*@<i class="fa fa-user"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        @*<div class="ct-productBox ct-productBox--inline ct-u-displayTable ct-u-marginBottom30">
+                <div class="ct-u-displayTableCell">
+                    <div class="ct-productImage">
+                        <a href="course-single.html">
+                            <img src="assets/images/demo-content/product-inline1.jpg" alt="Product">
+                        </a>
+                    </div>
+                </div>
+                <div class="ct-u-displayTableCell">
+                    <div class="ct-productDescription">
+                        <a href="/Datamantra/CourseDetail?id=@(item.CourseId)"><h5 class="ct-fw-600 ct-u-marginBottom10">@item.CourseName</h5></a>
+                        <span>
+                            @item.ShortDescription
+                        </span>
+                    </div>
+                    <div class="ct-productMeta">
+                        <div class="ct-u-displayTableVertical">
+                            <div class="ct-u-displayTableCell">
+                                <div class="starrr" data-rating="4"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa-star-o fa"></i></div>
+                            </div>
+                            <div class="ct-u-displayTableCell">
+                                <span class="ct-u-colorMotive">@item.Price$</span>
+                                <span class="ct-u-textLineThrough">@item.DiscountedPrice$</span>
+                            </div>
+                            <div class="ct-u-displayTableCell">
+                                <a href="#">
+                                    @item.EnrolledCount <i class="fa fa-user"></i>
+                                </a>
+                            </div>
+                            <div class="ct-u-displayTableCell">
+                                <a href="#">
+                                    @item.LongDescription
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+
+
+        @*<div class="ct-productBox ct-productBox--inline ct-u-displayTable ct-u-marginBottom30">
+                <div class="ct-u-displayTableCell">
+                    <div class="ct-productImage">
+                        <a href="course-single.html">
+                            <img src="assets/images/demo-content/product-inline2.jpg" alt="Product">
+                        </a>
+                    </div>
+                </div>
+                <div class="ct-u-displayTableCell">
+                    <div class="ct-productDescription">
+                        <a href="course-single.html"><h5 class="ct-fw-600 ct-u-marginBottom10">@item.CourseName</h5></a>
+                        <span>
+                           @item.ShortDescription
+                        </span>
+                    </div>
+                    <div class="ct-productMeta">
+                        <div class="ct-u-displayTableVertical">
+                            <div class="ct-u-displayTableCell">
+                                <div class="starrr" data-rating="4"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa-star-o fa"></i></div>
+                            </div>
+                            <div class="ct-u-displayTableCell">
+                                <span class="ct-u-colorMotive">@item.Price$</span>
+                                <span class="ct-u-textLineThrough">@item.DiscountedPrice</span>
+                            </div>
+                            <div class="ct-u-displayTableCell">
+                                <a href="#">
+                                    @item.EnrolledCount <i class="fa fa-user"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+    }
+}
+else
+{
+    <div class=" taC alert-info"><p> Sorry no Courses found in this Category</p></div>
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+    });
+</script>

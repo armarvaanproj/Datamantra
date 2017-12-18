@@ -1,0 +1,109 @@
+﻿@model IEnumerable<Datamantra.Model.Entity.User>
+@using Datamantra.Common
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>User</th>
+            <th> Role </th>
+            <th>Action </th>
+        </tr>
+        @if (Model != null && Model.Count() > 0)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <i class="fa fa-user fa-1x" aria-hidden="true"></i>
+                        @Html.Label(@item.UserName)
+                    </td>
+                    <td>
+                        <label id="labelRole@(item.UserId)">@Utility.GetRoleTypebyRoleId(item.RoleId)</label>
+                        <div id="divRole@(item.UserId)" style="display:none;">
+                            @Html.DropDownList("ddrole" + item.UserId, new List<SelectListItem>
+                            {
+                                 new SelectListItem{ Text="Admin", Value = "1" },
+                                 new SelectListItem{ Text="Staff", Value = "2" },
+                                 new SelectListItem{ Text="Student", Value = "3" },
+                            },item.RoleId)
+                        </div>
+                    </td>
+                    <td>
+                        <button type="button" style="display:none;" id="btnSaveUserRole@(item.UserId)" onclick="SaveUserRoles('@(item.UserId)');" class="btn btn-primary ">
+                            <i id="btnAddRoleLoader" style="display:none;" class="floatR mTop5 fa fa-spinner fa-spin mLeft10"></i>
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" id="btnEditUserRole@(item.UserId)" onclick="EditUserRoles('@(item.UserId)');" class="btn btn-primary  "><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                        <button type="button" style="display:none;" id="btnCancelUserRole@(item.UserId)" onclick="CancelUserRole('@(item.UserId)');" class="btn btn-default "><i class="fa fa-close" aria-hidden="true"></i></button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="6"><p style="line-height: 40px;" class="alert-info taC">No user found</p></td></tr>
+        }
+    </table>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () { });
+    function EditUserRoles(id) {
+        if (id > 0) {
+            $('#btnEditUserRole'+id).hide();
+            $('#btnSaveUserRole' + id).show();
+            $('#btnCancelUserRole' + id).show();
+            $("#labelRole" + id).hide();
+            $("#divRole" + id).show();
+        }
+    }
+
+    function CancelUserRole(id)
+    {
+        if (id > 0) {
+            $('#btnEditUserRole' + id).show();
+            $('#btnSaveUserRole' + id).hide();
+            $('#btnCancelUserRole' + id).hide();
+            $("#labelRole" + id).show();
+            $("#divRole" + id).hide();
+        }
+    }
+
+    function SaveUserRoles(id) {
+        if (id > 0) {
+            $("#btnAddRoleLoader").show();
+            $("#btnSaveUserRole" + id).attr('disabled', true);
+            $.ajax({
+                url: '/Admin/UpdateUserRoles',
+                type: "POST",
+                beforeSend: function (request) {
+                    request.setRequestHeader("X-Robots-Tag", "noindex, nofollow");
+                },
+                data: { roleId: $('#ddrole' + id).val(), userId: id },
+                success: function (data) {
+                    if (data != null && data != false && data != "" && data != 0) {
+                        toastr.success("Roles Updated successfully");
+                        $("#btnAddRoleLoader").hide();
+                        $("#btnSaveUserRole" + id).attr('disabled', false);
+                        var RoleType = "Student";
+                        if (data == 1)
+                            RoleType = "Admin";
+                        else if (data == 2)
+                            RoleType = "Staff";
+                        else if (data == 3)
+                            RoleType = "Student";
+                        $('#labelRole' + id).html(RoleType).show();
+                        $('#btnEditUserRole' + id).show();
+                        $('#btnSaveUserRole' + id).hide();
+                        $('#btnCancelUserRole' + id).hide();
+                        $("#ddrole" + id).val(data);
+                        $("#divRole" + id).hide();  
+                    }
+                    else {
+                        toastr.error("Roles not updated please try again");
+                        $("#btnAddRoleLoader").hide();
+                        $("#btnSave" + id).attr('disabled', false);
+                    }
+                }
+            });
+        }
+    }
+</script>

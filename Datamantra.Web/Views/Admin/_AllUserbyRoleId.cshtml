@@ -1,0 +1,245 @@
+﻿@model IEnumerable<Datamantra.Model.Entity.User>
+
+@using Datamantra.Common;
+
+@{
+    var RoleType = "Student";
+    var RoleId = Utility.GetInt(ViewData["RoleId"]);
+    bool Status = (ViewData["ActiveStatus"] != null && !string.IsNullOrEmpty(ViewData["ActiveStatus"].ToString())) ? Utility.GetBool(ViewData["ActiveStatus"]) : true;
+    if (Utility.GetInt(ViewData["RoleId"]) == 2)
+    {
+        RoleType = "Staff";
+    }
+    else
+    {
+        RoleType = "Student";
+    }
+
+}
+<div class="row">
+    <div class="col-sm-7">
+        <h2 id="heading">
+            @if (Status == true)
+            {<span>Active</span>}
+            else
+            {<span>Inactive</span>} @RoleType
+        </h2>
+    </div>
+    <div class="col-sm-2">
+        <label class="switch floatR">
+            @if (Status == true)
+            {
+                <input id="chkActive" type="checkbox" checked>
+            }
+            else
+            {
+                <input id="chkActive" type="checkbox">
+            }
+            <span class="slider round"></span>
+        </label>
+    </div>
+    <div class="col-sm-3">
+        @if (Status == true)
+        {
+            <button type="button" id="btnLogin" onclick="AddNewUser(@RoleId);" class="floatR btn btn-primary marginBottom20 text-uppercase">
+                <span><i class="fa fa-plus"></i> Add @RoleType</span>
+            </button>
+        }
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>  User Name  </th>
+            <th> Designation </th>
+            @*<th>@Html.DisplayNameFor(model => model.Image)</th>*@
+            <th>Description </th>
+            <th>
+                User Type @*(Roles)*@
+            </th>
+            @*<th>@Html.DisplayNameFor(model => model.Rating)</th>*@
+            <th>EmailAddress</th>
+            <th>Action</th>
+        </tr>
+        @if (Model != null && Model.Count() > 0)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Designation)
+                    </td>
+                    @*<td>
+                            @Html.DisplayFor(modelItem => item.Image)
+                        </td>*@
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @if (item.RoleId == 2)
+                        {
+                            <span>Staff</span>
+                        }
+                        else if (item.RoleId == 3)
+                        {
+                            <span>Student</span>
+                        }
+                        else
+                        {
+                            <span>Admin</span>
+                        }
+                    </td>
+                    @*<td>
+                            @Html.DisplayFor(modelItem => item.Rating)
+                        </td>*@
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmailAddress)
+                    </td>
+                    <td>
+                        <button type="button" id="btnStatus" onclick="ChangeActiveStatus('@(item.UserId)','@(item.IsActive.ToString())');" class="btn btn-default text-uppercase"><i class="fa fa-user-times" aria-hidden="true"></i></button>
+                        <button type="button" id="btnedit" onclick="EditUser('@(item.UserId)','@(ViewData["RoleId"])');" class="btn btn-primary text-uppercase"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                        <button type="button" id="btnDelete" onclick="DeleteUser('@(item.UserId)');" class="btn btn-danger text-uppercase"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="6"><p style="line-height: 40px;" class="alert-info taC">No data found</p></td></tr>
+        }
+    </table>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#chkActive').change(function () {
+            if ($('#chkActive').prop("checked")) {
+                ShowUser('@RoleId', true);
+            }
+            else {
+                ShowUser('@RoleId', false);
+            }
+        });
+    });
+
+    function ChangeActiveStatus(id, status) {
+        if (id > 0) {
+            bootbox.confirm({
+                title: 'Change User Status',
+                message: 'Are you sure want to change this user status?',
+                buttons: {
+                    'cancel': {
+                        label: "No",
+                        className: 'btn-default pull-left'
+                    },
+                    'confirm': {
+                        label: 'Yes',
+                        className: 'btn-danger pull-right'
+                    }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: '/Admin/ChangeUserStatusbyUserId',
+                            type: 'GET',
+                            data: { id: id, Status: status },
+                            async: false,
+                            cache: false,
+                            success: function (data) {
+                                if (data != null && data != undefined && data != "" && data) {
+                                    ShowUser(id, status);
+                                    toastr.success("User status changed Successfully!");
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    }
+
+    function EditUser(id, id2) {
+        if (id > 0) {
+            $("#divPageContent").html();
+            $("#divPageContent").html("<div class='taC'><i id='divPageLoader' class='fa fa-spinner fa-spin' style='font-size:30px;'></i></div>");
+            $.ajax({
+                url: "/Admin/_AddUser",
+                data: { id: id, RoleId: id2 },
+                cache: false,
+                success: function (data) {
+                    $('#divPageContent').html(data);
+                },
+                error: function (err) {
+                    console.log(err.responseText);
+                }
+            });
+            var _fullURL = window.location.pathname + "?id=" + id + "&callFrom=EditUser";
+            window.history.pushState({ path: _fullURL }, '', _fullURL);
+        }
+    }
+
+    function ViewUser(id) {
+        if (id > 0) {
+            $("#divPageContent").load("/Admin/_ViewUser?id=" + id);//+ "&t=" + new Date().getTime()
+            var _fullURL = window.location.pathname + "?callFrom=ViewRole&id=" + id;
+            window.history.pushState({ path: _fullURL }, '', _fullURL);
+        }
+    }
+
+    function AddNewUser(obj) {
+
+        $("#divPageContent").html();
+        $("#divPageContent").html("<div class='taC'><i id='divPageLoader' class='fa fa-spinner fa-spin' style='font-size:30px;'></i></div>");
+        $.ajax({
+            url: "/Admin/_AddUser",
+            data: { id: 0, RoleId: obj },
+            cache: false,
+            success: function (data) {
+                $('#divPageContent').html(data);
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            }
+        });
+        //$("#divPageContent").load("/Admin/_AddRole");//+ "&t=" + new Date().getTime()
+        var _fullURL = window.location.pathname + "?callFrom=AddRole";
+        window.history.pushState({ path: _fullURL }, '', _fullURL);
+    }
+
+    function DeleteUser(id) {
+        bootbox.confirm({
+            title: 'Delete Role',
+            message: 'Are you sure want to delete this Role?',
+            buttons: {
+                'cancel': {
+                    label: "No",
+                    className: 'btn-default pull-left'
+                },
+                'confirm': {
+                    label: 'Yes',
+                    className: 'btn-danger pull-right'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    $.ajax({
+                        url: '/Admin/DeleteUserbyUserId',
+                        type: 'GET',
+                        data: { id: id },
+                        async: false,
+                        cache: false,
+                        success: function (data) {
+                            if (data != null && data != undefined && data != "" && data) {
+                                ShowRoles();
+                                toastr.success("Roles are Deleted Successfully!");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+</script>

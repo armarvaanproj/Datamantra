@@ -1,0 +1,377 @@
+﻿@model Datamantra.Model.Entity.User
+@using (Html.BeginForm("SaveUser", "Admin", FormMethod.Post, new { @id = "frmAddUser" }))
+{
+    <div class="form-horizontal">
+        @Html.Hidden("CreatedBy", "ADMIN")
+        @Html.HiddenFor(x => x.RoleId)
+        @Html.HiddenFor(x => x.UserId)
+        @Html.Hidden("IsActive", true)
+        <div class="form-group">
+            @Html.Label("User Name", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.UserName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Email Address", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.EmailAddress, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.EmailAddress, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        @if (Model.UserId == null || Model.UserId == 0)
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.Password, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.PasswordFor(model => model.Password, new { @class = "form-control", @required = "required" })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        <div class="form-group">
+            @Html.Label("Designation", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Designation, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Designation, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Description", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Description, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        @*<div class="form-group">
+                @Html.Label("Image", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.Image, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Image, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+        @*<div class="form-group">
+                @Html.Label("Role", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.Label("Student", new { @class = "text-inline", @for = "rdStudent" }) @Html.RadioButtonFor(x => x.RoleId, "3", new { @id = "rdStudent" })
+                    @Html.Label("Staff", new { @class = "text-inline", @for = "rdStaff" }) @Html.RadioButtonFor(x => x.RoleId, "2", new { @id = "rdStaff" })
+                </div>
+            </div>*@
+        @if (Model.RoleId == 2)
+        {
+            <div class="form-group " id="divRating">
+                @Html.Label("Rating", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.Rating, new { @class = "form-control", @required = "required" })
+                    @Html.ValidationMessageFor(model => model.Rating, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            if (Model.StaffCourseLst != null && Model.StaffCourseLst.Count > 0)
+            {
+                var x = Model.StaffCourseLst;
+
+                var CategorySelectedItems = (from a in Model.SelectedCategorylst
+                                             select new SelectListItem
+                                             {
+                                                 Text = a.CategoryId.ToString(),
+                                                 Value = a.CategoryName.ToString(),
+                                                 Selected = false
+                                             });
+
+                int Coursecount = 1;
+                foreach (var item in Model.StaffCourseLst)
+                {
+                    Coursecount = Coursecount + 1;
+                    var CourseSelectedItems = (from a in item.Courselst
+                                               select new SelectListItem
+                                               {
+                                                   Text = a.CourseId.ToString(),
+                                                   Value = a.CourseName.ToString(),
+                                                   Selected = false
+                                               });
+                    <div id="divStaffCourse">
+                        <div id="divAssignCourse@(Coursecount)">
+                            <div class="form-group">
+                                <div id="divCategory@(Coursecount)">
+                                    @Html.Label("Category", new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.DropDownList("CategoryId" + Coursecount, new SelectList(CategorySelectedItems, "Text", "Value", item.CategoryId), "Select Category", new { maxlength = "50", @style = "", tabindex = 16, @class = "form-control", @required = "required", @onchange = "SelectCourse(this)" })
+                                        @Html.ValidationMessage("CategoryId" + Coursecount, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" id="divCourse@(Coursecount)">
+                                @Html.Label("Course", new { @class = "control-label col-md-2" })
+                                <div class="col-md-7">
+                                    @Html.DropDownList("CourseId" + Coursecount, new SelectList(CourseSelectedItems, "Text", "Value", item.CourseId), "Select Course", new { maxlength = "50", @style = "", tabindex = 16, @class = "form-control", @required = "required", @onchange = "SelectCourse(this)" })
+                                    @Html.ValidationMessage("CourseId" + Coursecount, "", new { @id = "CourseId" + Coursecount, @class = "text-danger" })
+                                </div>
+
+                                <div class="col-md-3">
+                                    @if (Coursecount == Model.StaffCourseLst.Count)
+                                    {
+                                        <button type="button" id="btnAnotherCourse@(Coursecount)" onclick="AddNewCourse();" class="btn btn-primary btn-sm text-uppercase"><i class="fa fa-plus-circle"></i></button>
+                                    }
+                                    <button type="button" id="btnRemoveCourse@(Coursecount)" onclick="RemoveCourse(this);" class="btn btn-primary btn-sm text-uppercase"><i class="fa fa-minus-circle"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div id="divStaffCourse">
+                    <div id="divAssignCourse1">
+                        <div class="form-group">
+                            <div id="divCategory1">
+                                @Html.Label("Category", new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.DropDownList("CategoryId1", ViewData["Categorylist"] as SelectList, "Select Category", new { maxlength = "50", @style = "", tabindex = 16, @class = "form-control", @required = "required", @onchange = "SelectCourse(this)" })
+                                    @Html.ValidationMessage("CategoryId1", "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group " id="divCourse1" style="display:none;">
+                            @Html.Label("Course", new { @class = "control-label col-md-2" })
+                            <div class="col-md-7">
+                                <select id="CourseId1" required="required" name="CourseId1" class="form-control" tabindex="16"></select>
+                                @Html.ValidationMessage("CourseId1", "", new { @id = "CourseId", @class = "text-danger" })
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" id="btnAnotherCourse1" onclick="AddNewCourse();" class="  btn btn-primary btn-sm text-uppercase"><i class="fa fa-plus-circle"></i></button>
+                                <button type="button" id="btnRemoveCourse1" style="display:none" onclick="RemoveCourse(this);" class="btn btn-primary btn-sm text-uppercase"><i class="fa fa-minus-circle"></i></button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        }
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit" id="btnAddUser" onclick="AddUser();" class="btn btn-primary btn-sm text-uppercase">
+                    <i id="btnAddUserLoader" style="display:none;" class="floatR mTop5 fa fa-spinner fa-spin mLeft10"></i>
+                    @if (Model.RoleId == 2)
+                    {
+                        <span>Add Staff</span>
+                    }
+                    else
+                    {
+                        <span>Add Student</span>
+                    }
+                </button>
+            </div>
+        </div>
+    </div>
+}
+<div>
+    <button type="button" id="btnClear" onclick="ShowUser('@Model.RoleId',true)" data-dismiss="modal" class="btn btn-default pull-left mTop10" tabindex="">
+        Back to List
+    </button>
+</div>
+
+<script type="text/javascript">
+    var count = 1;
+    var HtmlContent = $('#divAssignCourse1').html();
+    $(document).ready(function () {
+        $("#EmailAddress").blur(function () {
+            if ($("#EmailAddress").val() != null && $("#EmailAddress").val() != "" && $("#EmailAddress").val() != undefined && $("#EmailAddress").val().length > 0) {
+                $.ajax({
+                    url: "/User/CheckIsValidEmail",
+                    data: { email: $("#EmailAddress").val() },
+                    cache: false,
+                    success: function (data) {
+                        if (data != null && data != false && data != "" && data == true) {
+                            toastr.error("This email already registered")
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err.responseText);
+                    }
+                });
+            }
+        });
+
+        //CKEDITOR.replace('Description');
+        //if ('Model.RoleId' == 2) {
+        //    $('#divRating,#divCategory').show();
+        //}
+        //$("#rdStaff").change(function () {
+        //    if ($('#rdStaff').is(':checked')) {
+        //        $('#divRating,#divCategory').show();
+        //    }
+        //    else {
+        //        $('#divRating,#divCategory').hide();
+        //    }
+        //});
+        //$("#rdStudent").change(function () {
+        //    if ($('#rdStudent').is(':checked')) {
+        //        $('#divRating,#divCategory').hide();
+        //    }
+        //    else {
+        //        $('#divRating,#divCategory').show();
+        //    }
+        //});
+
+        //$("select[id^=CategoryId]").change(function () {
+
+
+        $("#frmAddUser").validate(
+        {
+            rules: {
+                UserName: {
+                    required: true,
+                },
+                EmailAddress: {
+                    required: true,
+                    email: true,
+                },
+                Password: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 12,
+                    //regex: "[A-Za-z0-9*|\\u0440#$!%&()+<>:]{6,20}$",
+                },
+                Designation: {
+                    required: true,
+                },
+                //RoleId: {
+                //    required: true,
+                //},
+                Description: {
+                    required: true,
+                },
+
+            },
+            messages: {
+                UserName: {
+                    required: 'Enter User Name',
+                },
+                EmailAddress: {
+                    required: true,
+                    email: true,
+                },
+                Password: {
+                    required: 'Enter Confirm Password',
+                    minlength: 'Password should not less than 5 letters',
+                    maxlength: 'Password should not exceeds than 12 letters',
+                    //  regex: 'Invalid Password'
+                },
+                Designation: {
+                    required: 'Please enter designation',
+                },
+                //RoleId: {
+                //    required: 'Please select the User Role',
+                //},
+                Description: {
+                    required: 'Please enter the Description',
+                },
+            },
+        });
+    });
+    function CallSaveUser() {
+        $("#btnAddUserLoader").show();
+        $("#btnAddUser").attr('disabled', true);
+        var form = $("#frmAddUser").serialize();
+        $.ajax({
+            url: '/Admin/SaveUser',
+            type: "POST",
+            beforeSend: function (request) {
+                request.setRequestHeader("X-Robots-Tag", "noindex, nofollow");
+            },
+            data: form,
+            success: function (data) {
+                if (data != null && data != false && data != "" && data.Status != "Duplicate") {
+                    toastr.success("Registered successfully")
+                    $("#btnAddUserLoader").hide();
+                    $("#btnAddUser").attr('disabled', false);
+                    ShowUser('@Model.RoleId', true);
+                }
+                else {
+                    toastr.error("This email already registered");
+                    $("#btnAddUserLoader").hide();
+                    $("#btnAddUser").attr('disabled', false);
+                }
+                
+            }
+        });
+    }
+
+    function RemoveCourse(obj) {
+        var res = $(obj).attr('id').replace(/[^0-9\.]+/g, "");
+        if (count > 1) {
+            $('#divAssignCourse' + res).remove();
+            // count = count -s 1;
+        }
+    }
+    function AddNewCourse() {
+        count = count + 1
+        var _course = '<div class="form-group" id="divAssignCourse1">' + HtmlContent + '</div>';
+        _course = _course.replace(/CategoryId1/g, 'CategoryId' + count);
+        _course = _course.replace(/CourseId1/g, 'CourseId' + count);
+        _course = _course.replace(/divAssignCourse1/g, 'divAssignCourse' + count);
+        _course = _course.replace(/divCategory1/g, 'divCategory' + count);
+        _course = _course.replace(/divCourse1/g, 'divCourse' + count);
+        _course = _course.replace(/btnAnotherCourse1/g, 'btnAnotherCourse' + count);
+        _course = _course.replace(/btnRemoveCourse1/g, 'btnRemoveCourse' + count);
+        $('#CategoryId' + count).val('')
+        $('#CourseId' + count).val('')
+        $('#divStaffCourse').append(_course);
+        var removecount = count;
+        $('#btnRemoveCourse' + parseInt(removecount - 1)).show();
+    }
+
+    function ValidateStaff() {
+
+    }
+    function AddUser() {
+        if ($("#frmAddUser").valid()) {
+            CallSaveUser();
+            //if ($('#RoleId') == 2) {
+            //    ValidateStaff();
+            //}
+            //else {
+            //    CallSaveUser();
+            //}
+
+        }
+    }
+
+    function SelectCourse(obj) {
+        var res = $(obj).attr('id').replace(/[^0-9\.]+/g, "");
+        if ($("#CategoryId" + res).val() > 0) {
+            $.ajax({
+                url: "/Admin/GetAllCourselistByCategoryId",
+                cache: false,
+                data: { CategoryId: $("#CategoryId" + res).val() },
+                beforeSend: function (request) {
+                    request.setRequestHeader("X-Robots-Tag", "noindex, nofollow");
+                },
+                success: function (data) {
+                    var items = [];
+                    if (data != null && data != false) {
+                        $.each(data, function () {
+                            // if (data.length > 0) {   for (i = 0; i < data.length; i++) {
+                            items.push("<option value=" + this.CourseId + ">" + this.CourseName + "</option>");
+                        });
+                        $('#divCourse' + res, '#CourseId' + res).show();
+                    }
+                    else {
+                        items.push("<option>-- No Course in Category --</option>");
+                        // Add course Button Enable
+                    }
+                    $("#CourseId" + res).empty();
+                    $("#CourseId" + res).append(items);
+                    $('#divCourse' + res).show();
+                },
+                error: function (err) {
+                    console.log(err.responseText);
+                }
+            });
+        }
+    }
+</script>

@@ -1,0 +1,82 @@
+﻿@model List<Datamantra.Model.Entity.User>
+@{
+    ViewBag.Title = "Professors";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--innerpage header start-->
+<section class="inr_page_title">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-7 col-sm-7 col-xs-12">
+                    <h2>Professors</h2>
+                </div>
+                <div class="col-md-5 col-sm-5 col-xs-12">
+                    <h4>Home/Professors</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--inner page header end-->
+@if (Model != null && Model.Count() > 0)
+{
+    <section class="paddingBoth100 doubleBorder backgroundLightGreen">
+        <div class="container">
+            <div class="row">
+                @foreach (var item in Model)
+                {
+                    <div class="col-md-6 col-lg-3">
+                        <div class="personBox marginBottom30">
+                            <div class="personMedia">
+                                <div class="personImage">
+                                    <a href="/Datamantra/StaffDetail?id=@item.UserId">
+                                        <img src="images/grey.jpg" alt="person">@*@item.Image*@
+                                    </a>
+                                </div>
+                                <div class="personName">
+                                    <h4 class="personName--title fw-600">
+                                        @item.UserName
+                                    </h4>
+                                    <span class="personName--meta colorMotive">
+                                        @item.Designation
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="personDescription">
+                                <p>
+                                    @item.Description
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="clearfix visible-md"></div>
+            </div>
+            @*<nav class="marginTop20">
+                    <ul class="pagination">
+                        <li>
+                            <a href="#" aria-label="Previous">&lt;</a>
+                        </li>
+                        <li><a href="#">1</a></li>
+                        <li class="active"><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li><a href="#">5</a></li>
+                        <li>
+                            <a href="#" aria-label="Next">&gt;</a>
+                        </li>
+                    </ul>
+                </nav>*@
+        </div>
+    </section>
+
+}
+else
+{
+    <p>No Staff found</p>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+    });
+</script>

@@ -1,0 +1,89 @@
+﻿@model Datamantra.Model.Entity.Role
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fa fa-close"></i></span></button>
+    <h4 class="modal-title">Add Role</h4>
+</div>
+
+<div class="modal-body">
+    @using (Html.BeginForm("SaveRole", "Admin", FormMethod.Post, new { @id = "formAddRole" }))
+    {
+        @Html.HiddenFor(model => model.RoleId)
+        <div class="form-horizontal">
+            <div class="form-group">
+                @Html.Label("Role", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.RoleName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.RoleName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div class="modal-footer taC">
+    <button type="button" id="btnClear" data-dismiss="modal" class="btn btn-default pull-left mTop10" tabindex="4">
+        Cancel
+    </button>
+    @*<button type="button" id="btnClear" onclick="ShowRoles()" data-dismiss="modal" class="btn btn-default pull-left mTop10" tabindex="">
+        Back to List
+    </button>*@
+    <button type="submit" id="btnSaveRole" onclick="SaveRole('@Model.RoleId');" class="btn btn-primary btn-lg text-uppercase">
+
+        <i id="btnSaveRoleloader" style="display:none;" class="floatR mTop5 fa fa-spinner fa-spin mLeft10"></i>
+        @if (Model.RoleId > 0)
+        {
+            <span>Update Role</span>
+        }
+        else
+        {
+            <span>Save Role</span>
+        }
+    </button>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#formAddRole").validate(
+        {
+            rules: {
+                RoleName: {
+                    required: true,
+                }
+            },
+            messages: {
+                RoleName: {
+                    required: 'Please Enter Role Name',
+                }
+            },
+        });
+    });
+
+    function SaveRole(id) {
+        if ($("#formAddRole").valid()) {
+            $("#btnSaveRoleloader").show();
+            $("#btnSaveRole").attr('disabled', true);
+            var form = $("#formAddRole").serialize();
+            $.ajax({
+                url: '/Admin/SaveRoles',
+                type: "POST",
+                beforeSend: function (request) {
+                    request.setRequestHeader("X-Robots-Tag", "noindex, nofollow");
+                },
+                data: form,
+                success: function (data) {
+                    if (data != null && data != false && data != "" && data == true) {
+                        if (id > 0) {
+                            toastr.success("Role updated successfully")
+                        }
+                        else {
+                            toastr.success("Role saved successfully")
+                        }
+                    }
+                    $('#myModal').modal("hide");
+                    $("#btnSaveRoleloader").hide();
+                    $("#btnSaveRole").attr('disabled', false);
+                    ShowRoles();
+                }
+            });
+        }
+    }
+</script>

@@ -1,0 +1,106 @@
+﻿@using Datamantra.Common;
+@using Datamantra.Model.Entity;
+@{
+    string userName = SessionEncryption.GetValueFromSession(SessionItemKey.UserName);
+    string emailAddress = SessionEncryption.GetValueFromSession(SessionItemKey.EmailAddress);
+    long userId = Utility.GetUserIdFromSession();
+    string roleType = SessionEncryption.GetValueFromSession(SessionItemKey.RoleID) != null ? SessionEncryption.GetValueFromSession(SessionItemKey.RoleID) : "";
+
+}
+
+@if (Utility.GetUserIdFromSession() > 0)
+{
+    <nav role="navigation">
+        <div class="navbar-collapse  navbar-right top_mainmenu" id="second">
+            <span class="pos_rel lang"></span>
+            <ul class="nav navbar-nav">
+                @*@if (!Utility.GetIsSubUserFromSession())
+                    {
+                        <li>
+                            <a class="phone_icon" style="cursor:default;font-weight:600;">
+                                <i class="fa fa-phone" aria-hidden="true"></i>
+                                <span> @Utility.GetAppSettings(Constants.SupportPhone)</span>
+                            </a>
+
+                        </li>
+
+                        <li id="aContactUs">
+                            <a href="javascript:void(0);" class="hint--bottom" data-hint="Suggestions"><i class="fa fa-lightbulb-o"></i> Suggestions </a>
+                        </li>
+                    }*@
+                @if (userId > 0)
+                {
+                    <li class="dropdown" id="settingDropdownacc">
+                        <a href="#" class="userbg drop-down-toggle" data-toggle="dropdown" aria-expanded="false" aria-haspopup="true" role="button">
+                            @Html.Raw("<label style=' text-transform: capitalize !important;'>Hello" + " " + userName + "!</label>")
+                            <i class="fa fa-user"></i>
+                            @*<span class="profileOnline">
+                                    <img src="~/Content/Images/user_icon.png" />
+                                </span>*@
+                        </a>
+                        <ul class="dropdown-menu edit_dropdown-menu profile_drop">
+                            <li class="mail_add">
+                                @if (!string.IsNullOrWhiteSpace(emailAddress))
+                                {
+                                    @Html.Raw(emailAddress)
+                                }
+                            </li>
+                            @*<li><a href="/ControlPanel/Index" class="small_link" id="aControlPanel">Control Panel</a></li>
+                                @if (Utility.GetSubUserTypeFromSession() != null && Utility.GetSubUserTypeFromSession().ToLower() == "whitelabel")
+                                {
+                                }
+                                else
+                                {
+                                    <li><a href="javascript:void(0)" id="aSetUp" onclick="LoadSetUpWizardPopup()" class="small_link">Practice Setup</a></li>
+                                }*@
+                            <li><a href="/Settings/Index" id="aSettings" class="small_link">Settings</a></li>
+                        </ul>
+                    </li>
+
+                     
+                    <li class="log_mob"><a href="#" class="logoff_btn hint--bottom" data-hint="Log Off" onclick="Logoff();"><i class="fa fa-power-off"></i> Log Off</a></li>
+                }
+            </ul>
+        </div>
+    </nav>
+} 
+
+    <script type="text/javascript">
+        //Dropdown starts
+        //$('a.drop-down-toggle').click(function () {
+        //    myDropDown = $(this).next('.drop-down-wrapper')
+
+        //    if (myDropDown.is(':visible')) {
+        //        $(this).removeClass('drop-down-open');
+        //        myDropDown.hide();
+        //    } else {
+        //        myDropDown.fadeIn();
+        //        $(this).addClass('drop-down-open');
+        //    }
+
+        //    return false;
+        //});
+
+        //$('html').click(function (e) {
+        //    $('.drop-down-wrapper').hide();
+        //});
+
+        $('.dropdown-menu').click(function (e) {
+            e.stopPropagation();
+        });
+        //Dropdown ends
+
+
+        $(function () {
+            //$('body').removeClass("drop_active");
+            $('[data-toggle="tooltip"]').tooltip();
+            if ('@userId' > 0) {
+                $("#lilogin").hide();
+                //location.href = "/User/SignIn";
+            }
+
+        });
+
+
+
+    </script>

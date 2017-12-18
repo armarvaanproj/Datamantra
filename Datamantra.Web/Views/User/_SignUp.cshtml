@@ -1,0 +1,161 @@
+﻿@model Datamantra.Model.Entity.User
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fa fa-close"></i></span></button>
+    <h4 class="modal-title">Sign Up</h4>
+</div>
+
+<div class="modal-body">
+    @using (Html.BeginForm("Signup", "Home", FormMethod.Post, new { id = "frmSignup" }))
+    {
+        <div>
+            <table class="responsive" width="100%">
+                <tr>
+                    <td class="labelName" style="width:20%">Name:</td>
+                    <td class="fieldText" style="width:100%">
+                        @Html.TextBoxFor(model => model.UserName, new { @type = "text", @placeholder = "Name", @class = "form-control ct-input--type1 input-hg ct-u-marginBottom50", @maxlength = "50", @tabindex = "1", required = "required" })
+                        @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "error" })
+                    </td>
+                </tr>
+                <tr><td class="spacer15"></td></tr>
+                <tr>
+                    <td class="labelName">
+                        Email:
+                    </td>
+                    <td class="fieldText">
+                        @Html.TextBoxFor(model => model.EmailAddress, new { @type = "text", @placeholder = "Email Address", @class = "form-control ct-input--type1 input-hg ct-u-marginBottom50", @maxlength = "50", @tabindex = "1", required = "required" })
+                        @Html.ValidationMessageFor(model => model.EmailAddress, "", new { @class = "error" })
+                    </td>
+                </tr>
+                <tr><td class="spacer15"></td></tr>
+                <tr>
+                    <td class="labelName">
+                        @*<label for="inputSizingLarge"></label>*@<span class="red">*</span>New Password:
+                    </td>
+                    <td class="fieldName">
+                        @(Html.PasswordFor(model => model.Password, new { maxlength = "12", @class = "form-control ct-input--type1 input-hg ct-u-marginBottom50", tabindex = "3", placeholder = "Password", required = "required" }))
+                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "error" })
+                    </td>
+                </tr>
+                <tr><td class="spacer15"></td></tr>
+                <tr>
+                    <td class="labelName">
+                        @*<label for="inputSizingLarge"></label>*@<span class="red">*</span>Confirm Password:
+                    </td>
+                    <td class="fieldName">
+                        @(Html.PasswordFor(model => model.ConfirmPassword, new { maxlength = "12", @class = "form-control ct-input--type1 input-hg ct-u-marginBottom50", tabindex = "3", placeholder = "Confirm Password", required = "required" }))
+                        @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "error" })
+                    </td>
+                </tr>
+                <tr><td class="spacer15"></td></tr>
+            </table>
+        </div>
+    }
+
+</div>
+
+<div class="modal-footer text-right">
+    <button type="button" id="btnClear" data-dismiss="modal" class="btn btn-default pull-left mTop10" tabindex="4">
+        Cancel
+    </button>
+    <button type="button" id="btnSaveUser" onclick="SaveUser();" class="btn btn-primary text-uppercase" tabindex="3">
+        <i id="btnSaveLoader" style="display:none;" class="floatR mTop5 fa fa-spinner fa-spin mLeft10"></i>Sign Up
+    </button>
+
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#EmailAddress").blur(function () {
+            if ($("#EmailAddress").val() != null && $("#EmailAddress").val() != "" && $("#EmailAddress").val() != undefined && $("#EmailAddress").val().length > 0) {
+                $.ajax({
+                    url: "/User/CheckIsValidEmail",
+                    data: { email: $("#EmailAddress").val() },
+                    cache: false,
+                    success: function (data) {
+                        if (data != null && data != false && data != "" && data == true) {
+                            toastr.error("This email already registered")
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err.responseText);
+                    }
+                });
+            }
+        });
+
+        $(".modal-dialog").addClass("modal-dialog-small");
+        $("#frmSignup").validate(
+        {
+            rules: {
+                Name: { required: true },
+                EmailAddress: {
+                    required: true,
+                    email: true
+                },
+                Password: {
+                    required: true,
+                    minlength: 5,
+                    //regex: "[A-Za-z0-9*|\\u0440#$!%&()+<>:]{6,20}$",
+                },
+                ConfirmPassword: {
+                    required: true,
+                    minlength: 5,
+                    equalTo: "#Password",
+                    //regex: "[A-Za-z0-9*|\\u0440#$!%&()+<>:]{6,20}$",
+                }
+            },
+            messages: {
+                Name: { required: 'Enter Name' },
+                EmailAddress: {
+                    required: 'Enter Email',
+                    email: 'Enter Valid Email Address'
+                },
+                Password: {
+                    required: 'Enter Password',
+                    minlength: "Mininum 5 Characters",
+                    //regex: 'Special charaters not allowed'
+                },
+                ConfirmPassword: {
+                    required: 'Enter Confirm Password',
+                    minlength: "Mininum 5 Characters",
+                    equalTo: 'Password not matched',
+                    //regex: 'Invalid Password'
+                }
+            },
+        });
+
+    });
+
+
+    function SaveUser() {
+        if ($("#frmSignup").valid()) {
+            $("#btnSaveLoader").show();
+            $("#btnSaveUser").attr('disabled', true);
+            var form = $("#frmSignup").serialize();
+            $.ajax({
+                url: '/User/SignUp',
+                type: "POST",
+                beforeSend: function (request) {
+                    request.setRequestHeader("X-Robots-Tag", "noindex, nofollow");
+                },
+                data: form,
+                success: function (data) {                   
+                    if (data != null && data != false && data != "" && data.Status != "Duplicate") {
+                        toastr.success("Registered successfully");
+                        $('#myModal').modal("hide");
+                        $("#btnSaveLoader").hide();
+                        $("#btnSaveUser").attr('disabled', false);
+                        location.href = '/Datamantra/Courses';
+                    }
+                    else {
+                        toastr.error("This email already registered");
+                        $("#btnSaveLoader").hide();
+                        $("#btnSaveUser").attr('disabled', false);
+                    }
+                 
+                }
+            });
+        }
+    }
+</script>

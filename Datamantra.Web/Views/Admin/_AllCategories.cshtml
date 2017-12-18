@@ -1,0 +1,116 @@
+﻿@model IEnumerable<Datamantra.Model.Entity.Category>
+
+    <button type="button" id="btnLogin" onclick="AddNewCategory();" class="floatR btn btn-primary text-uppercase marginBottom20"><i class="fa fa-plus"></i> Add New Category</button>
+
+@if (Model != null && Model.Count() > 0)
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>
+                    Category Name
+                </th>
+                <th>Action</th>
+            </tr>
+
+            @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                <span onclick="ViewCategory('@item.CategoryId')">@item.CategoryName</span>
+            </td>
+            <td>
+                <button type="button" id="btnedit" onclick="EditCategory('@(item.CategoryId)');" class="btn btn-primary  text-uppercase"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                <button type="button" id="btnDelete" onclick="DeleteCategory('@(item.CategoryId)');" class="btn btn-primary  text-uppercase"><i class="fa fa-trash" aria-hidden="true"></i></button>
+            </td>
+        </tr>
+        }
+        </table>
+     </div>
+        }
+
+        <script type="text/javascript">
+            $(document).ready(function () { });
+
+            function EditCategory(id) {
+                if (id > 0) {
+                    $.ajax({
+                        url: "/Admin/_AddCategory",
+                        data: { id: id },
+                        cache: false,
+                        success: function (data) {
+                            $('#ModelBody').html(data);
+                            $('#myModal').modal({ backdrop: 'static', keyboard: true });
+                            $('#myModal').modal("show");
+                            $(".modal-dialog").attr('class', 'modal-dialog modal-dialog_lg');
+                        },
+                        error: function (err) {
+                            console.log(err.responseText);
+                        }
+                    });
+                    var _fullURL = window.location.pathname + "?id=" + id + "&callFrom=EditCategory";
+                    window.history.pushState({ path: _fullURL }, '', _fullURL);
+                }
+            }
+
+            function ViewCategory(id) {
+                if (id > 0) {
+                    $("#divPageContent").load("/Admin/_ViewCategory?id=" + id);//+ "&t=" + new Date().getTime()
+                    var _fullURL = window.location.pathname + "?callFrom=ViewCategory&id=" + id;
+                    window.history.pushState({ path: _fullURL }, '', _fullURL);
+                }
+            }
+            function AddNewCategory() {
+                $.ajax({
+                    url: "/Admin/_AddCategory",
+                    data: {},
+                    cache: false,
+                    success: function (data) {
+                        $('#ModelBody').html(data);
+                        $('#myModal').modal({ backdrop: 'static', keyboard: true });
+                        $('#myModal').modal("show");
+                        $(".modal-dialog").attr('class', 'modal-dialog modal-dialog_lg');
+                    },
+                    error: function (err) {
+                        console.log(err.responseText);
+                    }
+                });
+                //$("#divPageContent").load("/Admin/_AddCategory");//+ "&t=" + new Date().getTime()
+                var _fullURL = window.location.pathname + "?callFrom=AddCategory";
+                window.history.pushState({ path: _fullURL }, '', _fullURL);
+            }
+
+            function DeleteCategory(id) {
+                bootbox.confirm({
+                    title: 'Delete Category',
+                    message: 'Are you sure you want to delete this Category?',
+                    buttons: {
+                        'cancel': {
+                            label: "No",
+                            className: 'btn-default pull-left'
+                        },
+                        'confirm': {
+                            label: 'Yes',
+                            className: 'btn-danger pull-right'
+                        }
+                    },
+                    callback: function (result) {
+                        if (result) {
+                            $.ajax({
+                                url: '/Admin/DeleteCategoryById',
+                                type: 'GET',
+                                data: { id: id },
+                                async: false,
+                                cache: false,
+                                success: function (data) {
+                                    if (data != null && data != undefined && data != "" && data) {
+                                        ShowCategories();
+                                        toastr.success("Category Deleted Successfully!");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        </script>
